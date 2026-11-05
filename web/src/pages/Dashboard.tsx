@@ -1,4 +1,4 @@
-import { Bell, ShieldAlert, Timer } from "lucide-react";
+import { Bell, ListTodo, ShieldAlert, Timer } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PageHeader } from "@/components/PageHeader";
 import { CallbackItem, SessionItem } from "@/components/records";
@@ -22,7 +22,7 @@ export function DashboardPage() {
       <QueryView query={dash}>
         {(d) => (
           <div className="flex flex-col gap-5">
-            {(!!d.openSafeguarding || !!d.retentionDue) && (
+            {(!!d.openSafeguarding || !!d.retentionDue || !!d.overdueMeetingActions) && (
               <div className="grid gap-3 sm:grid-cols-2">
                 {!!d.openSafeguarding && (
                   <Link to="/safeguarding" className="flex items-center gap-3 rounded-lg border border-destructive/40 bg-destructive/10 p-4">
@@ -37,6 +37,14 @@ export function DashboardPage() {
                     <Timer className="size-6 text-warning" aria-hidden />
                     <span>
                       <strong>{d.retentionDue}</strong> {d.retentionDue === 1 ? "client is" : "clients are"} due for anonymisation soon
+                    </span>
+                  </Link>
+                )}
+                {!!d.overdueMeetingActions && (
+                  <Link to="/meetings?tab=actions&show=overdue" className="flex items-center gap-3 rounded-lg border border-warning/40 bg-warning/10 p-4">
+                    <ListTodo className="size-6 text-warning" aria-hidden />
+                    <span>
+                      <strong>{d.overdueMeetingActions}</strong> overdue trust meeting {d.overdueMeetingActions === 1 ? "action" : "actions"}
                     </span>
                   </Link>
                 )}

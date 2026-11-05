@@ -25,12 +25,16 @@ describe("MCP server", () => {
     expect(volTools).toContain("clients_list");
     expect(volTools).not.toContain("clients_create");
     expect(volTools).not.toContain("reports_demand");
+    expect(volTools).not.toContain("meetings_get");
 
     const manager = await connect(await userWith(["manager"]));
     const tools = (await manager.listTools()).tools.map((t) => t.name);
     expect(tools).toContain("reports_demand");
+    for (const t of ["meetings_get", "meetingActions_list", "meetingActions_update"]) expect(tools).toContain(t);
     // Never exposed over MCP, whatever the role.
-    for (const t of ["clients_anonymise", "clients_export", "users_update", "tokens_create"]) expect(tools).not.toContain(t);
+    for (const t of ["clients_anonymise", "clients_export", "users_update", "tokens_create", "meetings_approveMinutes", "meetingPapers_createUpload"]) {
+      expect(tools).not.toContain(t);
+    }
   });
 
   it("runs tools as the user and audits with the mcp channel", async () => {

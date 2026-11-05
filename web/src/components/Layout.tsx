@@ -3,6 +3,7 @@ import {
   CalendarDays,
   ClipboardList,
   Home,
+  Landmark,
   LogOut,
   Menu,
   PhoneCall,
@@ -32,7 +33,7 @@ interface NavItem {
 }
 
 const ADMIN_NEED: PermissionRequirement = {
-  any: ["users.manage", "questionnaires.manage", "config.manage", "retention.manage"],
+  any: ["users.manage", "questionnaires.manage", "config.manage", "retention.manage", "meetings.manage"],
 };
 
 const NAV: NavItem[] = [
@@ -41,6 +42,7 @@ const NAV: NavItem[] = [
   { to: "/callbacks", label: "Callbacks", icon: <PhoneCall />, need: "clients.view", primary: true },
   { to: "/sessions", label: "Sessions", icon: <CalendarDays />, need: "clients.view", primary: true },
   { to: "/safeguarding", label: "Safeguarding", icon: <ShieldAlert />, need: "safeguarding.view" },
+  { to: "/meetings", label: "Trust meetings", icon: <Landmark />, need: "meetings.view" },
   { to: "/reports", label: "Reports", icon: <BarChart3 />, need: "reports.view" },
   { to: "/audit", label: "Audit log", icon: <ScrollText />, need: "audit.view" },
   { to: "/admin", label: "Admin", icon: <Settings />, need: ADMIN_NEED },
@@ -77,12 +79,12 @@ export function Layout() {
   const primary = items.filter((i) => i.primary);
 
   return (
-    <div className="min-h-dvh md:grid md:grid-cols-[16rem_1fr]">
+    <div className="min-h-dvh md:grid md:grid-cols-[16rem_1fr] print:block">
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-2 focus:rounded focus:bg-background focus:p-2">
         Skip to content
       </a>
 
-      <aside className="hidden bg-sidebar text-sidebar-foreground md:sticky md:top-0 md:flex md:h-dvh md:flex-col">
+      <aside className="hidden bg-sidebar text-sidebar-foreground md:sticky md:top-0 md:flex md:h-dvh md:flex-col print:!hidden">
         <div className="flex items-center gap-3 p-4">
           <img src={theme.logo} alt="" className="size-10" />
           <span className="font-heading text-lg font-bold leading-tight">{me.org.name || theme.appName}</span>
@@ -101,7 +103,7 @@ export function Layout() {
       </aside>
 
       <div className="flex min-h-dvh flex-col">
-        <header className="sticky top-0 z-30 flex items-center justify-between border-b bg-sidebar px-4 py-2 text-sidebar-foreground md:hidden">
+        <header className="sticky top-0 z-30 flex items-center justify-between border-b bg-sidebar px-4 py-2 text-sidebar-foreground md:hidden print:hidden">
           <div className="flex items-center gap-2">
             <img src={theme.logo} alt="" className="size-8" />
             <span className="font-heading font-bold">{me.org.name || theme.appName}</span>
@@ -125,13 +127,13 @@ export function Layout() {
           </Dialog>
         </header>
 
-        <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 pt-5 pb-24 sm:px-6 md:pb-10">
+        <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 pt-5 pb-24 sm:px-6 md:pb-10 print:max-w-none print:p-0">
           <Outlet />
         </main>
 
         <nav
           aria-label="Quick links"
-          className="fixed inset-x-0 bottom-0 z-30 flex border-t bg-background pb-[env(safe-area-inset-bottom)] md:hidden"
+          className="fixed inset-x-0 bottom-0 z-30 flex border-t bg-background pb-[env(safe-area-inset-bottom)] md:hidden print:hidden"
         >
           {primary.map((i) => (
             <NavEntry key={i.to} item={i} compact />

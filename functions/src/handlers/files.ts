@@ -8,10 +8,11 @@ import { bucket, C, db, docOut, isEmulator } from "../core/firebase.js";
 import { clientFor } from "./common.js";
 
 const UPLOAD_MINUTES = 15;
-const DOWNLOAD_MINUTES = 5;
+export const DOWNLOAD_MINUTES = 5;
+export const MAX_UPLOAD_BYTES = 25 * 1024 * 1024;
 
 /** Types staff are likely to need. Anything else is refused. */
-const ALLOWED_TYPES = new Set([
+export const ALLOWED_TYPES = new Set([
   "application/pdf",
   "image/jpeg",
   "image/png",
@@ -56,7 +57,7 @@ export async function signedDownloadUrl(path: string, fileName: string): Promise
   return url;
 }
 
-async function signedUploadUrl(path: string, contentType: string): Promise<{ url: string; method: "PUT" | "POST"; headers: Record<string, string> }> {
+export async function signedUploadUrl(path: string, contentType: string): Promise<{ url: string; method: "PUT" | "POST"; headers: Record<string, string> }> {
   if (isEmulator()) {
     return {
       url: `${emulatorBase()}/upload/storage/v1/b/${bucket().name}/o?uploadType=media&name=${encodeURIComponent(path)}`,
@@ -134,7 +135,7 @@ export const fileHandlers: HandlerGroup = {
       [meta] = await file.setMetadata({ contentType: snap.get("contentType") });
     }
     const size = Number(meta.size ?? 0);
-    if (size > 25 * 1024 * 1024 || meta.contentType !== snap.get("contentType")) {
+    if (size > MAX_UPLOAD_BYTES || meta.contentType !== snap.get("contentType")) {
       await file.delete({ ignoreNotFound: true });
       await ref.delete();
       throw fail.invalid("The uploaded file didn't match what was expected and has been removed.");

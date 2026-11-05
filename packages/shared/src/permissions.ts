@@ -24,6 +24,8 @@ export const PERMISSIONS = {
   "safeguarding.manage": "Review, assign, escalate and close safeguarding concerns",
   "retention.manage": "View clients approaching the retention date",
   "mcp.use": "Create personal access tokens and use the MCP server",
+  "meetings.view": "View trust meetings, registers, minutes, actions and papers",
+  "meetings.manage": "Manage trustees, meetings, registers, minutes and actions",
 } as const;
 
 export type Permission = keyof typeof PERMISSIONS;

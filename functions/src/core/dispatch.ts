@@ -31,7 +31,7 @@ export function hasPermission(ctx: Ctx, required: Permission | Permission[] | "a
 
 function readAction(name: OpName): AuditAction {
   if (name === "clients.export" || name === "reports.exportCsv") return "export";
-  if (name === "files.getDownloadUrl") return "download";
+  if (name === "files.getDownloadUrl" || name === "meetingPapers.getDownloadUrl") return "download";
   if (name.endsWith(".list") || name === "users.directory" || name === "retention.upcoming") return "list";
   return "read";
 }

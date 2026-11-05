@@ -11,6 +11,9 @@ import { ClientDetailPage } from "./pages/clients/ClientDetail";
 import { ClientEditPage, ClientNewPage } from "./pages/clients/ClientForm";
 import { ClientsListPage } from "./pages/clients/ClientsList";
 import { DashboardPage } from "./pages/Dashboard";
+import { MeetingDetailPage } from "./pages/meetings/MeetingDetail";
+import { MeetingPrintPage } from "./pages/meetings/MeetingPrint";
+import { MeetingsPage } from "./pages/meetings/MeetingsIndex";
 import { NoAccessPage, SignInPage } from "./pages/SignIn";
 import { ReportsPage } from "./pages/Reports";
 import { SafeguardingPage } from "./pages/Safeguarding";
@@ -40,6 +43,9 @@ export function App() {
         <Route path="callbacks" element={<RequirePermission need="clients.view"><CallbacksPage /></RequirePermission>} />
         <Route path="sessions" element={<RequirePermission need="clients.view"><SessionsPage /></RequirePermission>} />
         <Route path="safeguarding" element={<RequirePermission need="safeguarding.view"><SafeguardingPage /></RequirePermission>} />
+        <Route path="meetings" element={<RequirePermission need="meetings.view"><MeetingsPage /></RequirePermission>} />
+        <Route path="meetings/:id" element={<RequirePermission need="meetings.view"><MeetingDetailPage /></RequirePermission>} />
+        <Route path="meetings/:id/print" element={<RequirePermission need="meetings.view"><MeetingPrintPage /></RequirePermission>} />
         <Route path="reports" element={<RequirePermission need="reports.view"><ReportsPage /></RequirePermission>} />
         <Route path="audit" element={<RequirePermission need="audit.view"><AuditLogPage /></RequirePermission>} />
         <Route path="admin/:section?" element={<AdminPage />} />

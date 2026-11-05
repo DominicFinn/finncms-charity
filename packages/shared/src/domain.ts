@@ -321,6 +321,10 @@ export interface OrgSettings {
   /** Hours before a callback is due that a reminder is sent. */
   reminderLeadHours: number;
   calendarSyncEnabled: boolean;
+  /** Fewest trustees present for a meeting to be quorate. */
+  quorumMinimum: number;
+  /** Share of serving trustees who must be present, from 0 to 1. 0 means only the minimum applies. */
+  quorumFraction: number;
 }
 
 export const DEFAULT_ORG_SETTINGS: OrgSettings = {
@@ -331,6 +335,8 @@ export const DEFAULT_ORG_SETTINGS: OrgSettings = {
   sessionTimeoutMinutes: 30,
   reminderLeadHours: 24,
   calendarSyncEnabled: false,
+  quorumMinimum: 3,
+  quorumFraction: 0,
 };
 
 export interface Notification {
@@ -420,4 +426,127 @@ export interface RetentionCandidate {
   lastActivityAt: ISODate;
   anonymiseAfter: ISODate;
   heldBySafeguarding: boolean;
+}
+
+// Trust meetings
+
+export const MEETING_TYPES = ["board", "agm", "egm", "subcommittee", "other"] as const;
+export type MeetingType = (typeof MEETING_TYPES)[number];
+
+export const MEETING_TYPE_LABELS: Record<MeetingType, string> = {
+  board: "Board meeting",
+  agm: "Annual general meeting",
+  egm: "Extraordinary general meeting",
+  subcommittee: "Subcommittee",
+  other: "Other",
+};
+
+export const ATTENDANCE_STATUSES = ["present", "apologies", "absent"] as const;
+export type AttendanceStatus = (typeof ATTENDANCE_STATUSES)[number];
+
+/** A trustee or board member. Kept after they stand down, so old registers still make sense. */
+export interface Trustee {
+  id: string;
+  name: string;
+  /** For example Chair, Treasurer, Secretary or Trustee. */
+  role: string;
+  email?: string;
+  /** YYYY-MM-DD. */
+  startDate?: string;
+  /** YYYY-MM-DD. */
+  endDate?: string;
+  active: boolean;
+  /** The system user this trustee signs in as, if any. */
+  userUid?: string;
+  createdAt: ISODate;
+  updatedAt?: ISODate;
+}
+
+export interface AgendaItem {
+  id: string;
+  title: string;
+  presenter?: string;
+  /** What the item is about, written before the meeting. */
+  notes?: string;
+  /** What was discussed and decided. */
+  minutes?: string;
+}
+
+export interface MeetingAttendance {
+  trusteeId: string;
+  status: AttendanceStatus;
+}
+
+export interface MeetingGuest {
+  name: string;
+  organisation?: string;
+}
+
+export type MinutesStatus = "draft" | "approved";
+
+export interface Meeting {
+  id: string;
+  title: string;
+  type: MeetingType;
+  startsAt: ISODate;
+  endsAt?: ISODate;
+  location?: string;
+  onlineLink?: string;
+  agenda: AgendaItem[];
+  /** Minutes not tied to one agenda item. */
+  generalMinutes?: string;
+  attendance: MeetingAttendance[];
+  guests: MeetingGuest[];
+  /** Staff in attendance. */
+  staffUids: string[];
+  status: MinutesStatus;
+  approvedAt?: ISODate;
+  approvedBy?: string;
+  /** The later meeting at which these minutes were approved. */
+  approvedAtMeetingId?: string;
+  createdAt: ISODate;
+  createdBy: string;
+  updatedAt?: ISODate;
+}
+
+export type MeetingActionStatus = "open" | "done";
+
+export interface MeetingAction {
+  id: string;
+  /** The meeting the action was raised at. */
+  meetingId: string;
+  /** When that meeting started, so earlier open actions can be found. */
+  raisedAt: ISODate;
+  description: string;
+  ownerTrusteeId?: string;
+  ownerUid?: string;
+  /** YYYY-MM-DD. */
+  dueDate?: string;
+  status: MeetingActionStatus;
+  completedAt?: ISODate;
+  /** The meeting at which it was reported done, if any. */
+  completedAtMeetingId?: string;
+  createdAt: ISODate;
+  createdBy: string;
+  updatedAt?: ISODate;
+}
+
+export interface MeetingPaper {
+  id: string;
+  meetingId: string;
+  fileName: string;
+  contentType: string;
+  sizeBytes: number;
+  description: string;
+  status: "pending" | "ready";
+  createdAt: ISODate;
+  createdBy: string;
+}
+
+export interface Quorum {
+  /** Trustees serving on the day of the meeting. */
+  eligible: number;
+  present: number;
+  required: number;
+  quorate: boolean;
 }

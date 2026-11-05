@@ -2,7 +2,12 @@
   "name": "charity-contact-management",
   "private": true,
   "description": "Open source client and case management for small charities",
-  "workspaces": ["packages/shared", "functions", "web", "scripts"],
+  "workspaces": [
+    "packages/shared",
+    "functions",
+    "web",
+    "scripts"
+  ],
   "scripts": {
     "build": "npm run build -w functions && npm run build -w web",
     "typecheck": "npm run typecheck --workspaces --if-present",
@@ -11,8 +16,13 @@
     "dev": "npm run dev -w web",
     "seed": "npm run seed -w scripts --"
   },
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=24"
+  },
   "devDependencies": {
     "typescript": "~5.9.3"
+  },
+  "overrides": {
+    "@grpc/grpc-js": "^1.14.7"
   }
 }

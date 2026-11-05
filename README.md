@@ -36,7 +36,7 @@ The key design decision is that browsers never read or write Firestore or Storag
 
 ## Running it locally
 
-You need Node 22 or later, Java 21 or later (for the Firebase emulators) and the Firebase CLI (`npm install -g firebase-tools`).
+You need Node 24 or later, Java 21 or later (for the Firebase emulators) and the Firebase CLI (`npm install -g firebase-tools`).
 
 ```sh
 npm install

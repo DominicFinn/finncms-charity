@@ -11,6 +11,8 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
+  // Top level await is used to load the Firebase config before the app starts.
+  build: { target: "es2022" },
   server: {
     port: 5173,
     proxy: {

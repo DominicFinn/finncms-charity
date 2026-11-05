@@ -8,13 +8,12 @@ This takes about half an hour the first time.
 2. Create the Firestore database in **europe-west2 (London)**. The functions run in europe-west2, and Firestore triggers must be in the same region as the database. If you choose another UK or EU region, change `REGION` in `functions/src/core/firebase.ts` and the region in `firebase.json` to match.
 3. Create the default Cloud Storage bucket in the same region.
 4. In Authentication, enable the **Google** sign in provider. Under Settings > Authorized domains, add the domain the app will be served from.
-5. Register a web app in Project settings and note its config values.
+5. Register a web app in Project settings. The app reads its config from Firebase Hosting when it starts, so there is nothing to copy.
 
 ## 2. Configure
 
 ```sh
 cp .firebaserc.example .firebaserc        # put your project id in it
-cp web/.env.example web/.env.production   # fill in the web app config and VITE_THEME
 cp functions/.env.example functions/.env.<project-id>
 ```
 

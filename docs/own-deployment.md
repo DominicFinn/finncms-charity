@@ -51,7 +51,7 @@ The web app uses it automatically. Seed your project with `npm run seed -- --con
 The shared repository ignores `.firebaserc` and `functions/.env.<project-id>` so nobody commits their project by accident. In your own copy, add them on purpose, because they hold no secrets:
 
 ```sh
-git add -f .firebaserc functions/.env.<project-id> web/.env.production
+git add -f .firebaserc functions/.env.<project-id>
 ```
 
 Never commit `functions/.secret.local` or any real secret. Secrets go in Secret Manager (see [deploy.md](deploy.md)).

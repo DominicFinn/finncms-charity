@@ -1,0 +1,76 @@
+import type { Theme } from "./types";
+
+/**
+ * Nottingham and Derbyshire Irish Elders. Irish greens with a warm gold
+ * accent on cream. Many readers are older, so text is larger than the
+ * default and contrast stays at WCAG AA or better.
+ */
+export const ndieTheme: Theme = {
+  id: "ndie",
+  appName: "NDIE Contacts",
+  logo: "/logo-ndie.svg",
+  radius: "0.75rem",
+  typography: {
+    bodyFont: '"Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif',
+    headingFont: '"Merriweather", Georgia, serif',
+    googleFontsUrl:
+      "https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Source+Sans+3:wght@400;600;700&display=swap",
+    baseSizePx: 18,
+  },
+  colours: {
+    light: {
+      background: "#fbf8f1",
+      foreground: "#1c2a22",
+      card: "#ffffff",
+      cardForeground: "#1c2a22",
+      popover: "#ffffff",
+      popoverForeground: "#1c2a22",
+      primary: "#0b5d3b",
+      primaryForeground: "#ffffff",
+      secondary: "#e6efe5",
+      secondaryForeground: "#123d28",
+      muted: "#f1ece0",
+      mutedForeground: "#4a5a50",
+      accent: "#f6e3b4",
+      accentForeground: "#4d3500",
+      destructive: "#b42318",
+      destructiveForeground: "#ffffff",
+      warning: "#9a5b00",
+      warningForeground: "#ffffff",
+      success: "#0b5d3b",
+      successForeground: "#ffffff",
+      border: "#ded6c3",
+      input: "#b9b09b",
+      ring: "#c98a0b",
+      sidebar: "#0b5d3b",
+      sidebarForeground: "#f7f3e8",
+    },
+    dark: {
+      background: "#0f1a14",
+      foreground: "#f1eee4",
+      card: "#16251c",
+      cardForeground: "#f1eee4",
+      popover: "#16251c",
+      popoverForeground: "#f1eee4",
+      primary: "#6fcf97",
+      primaryForeground: "#0b2216",
+      secondary: "#1e3328",
+      secondaryForeground: "#f1eee4",
+      muted: "#1e3328",
+      mutedForeground: "#b5c2b9",
+      accent: "#4d3a12",
+      accentForeground: "#f6e3b4",
+      destructive: "#f47c72",
+      destructiveForeground: "#1a0b09",
+      warning: "#f0b84a",
+      warningForeground: "#1a1203",
+      success: "#6fcf97",
+      successForeground: "#0b2216",
+      border: "#2b4234",
+      input: "#3d5a48",
+      ring: "#e8b54a",
+      sidebar: "#0b2216",
+      sidebarForeground: "#f1eee4",
+    },
+  },
+};

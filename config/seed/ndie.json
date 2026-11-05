@@ -1,0 +1,215 @@
+{
+  "$comment": "Nottingham and Derbyshire Irish Elders. The retention period and the final lists of questions, categories and outcome measures are still to be confirmed with NDIE.",
+  "org": {
+    "name": "Nottingham and Derbyshire Irish Elders",
+    "retentionMonths": 36,
+    "retentionWarningDays": 60,
+    "allowedDomains": [],
+    "sessionTimeoutMinutes": 30,
+    "reminderLeadHours": 24,
+    "calendarSyncEnabled": false
+  },
+  "helpCategories": [
+    {
+      "id": "lifts",
+      "name": "Lifts to appointments"
+    },
+    {
+      "id": "health",
+      "name": "Health"
+    },
+    {
+      "id": "financial",
+      "name": "Financial"
+    },
+    {
+      "id": "loneliness",
+      "name": "Loneliness and social contact"
+    }
+  ],
+  "sessionTypes": [
+    {
+      "id": "in-person",
+      "name": "In person",
+      "inPerson": true
+    },
+    {
+      "id": "video-call",
+      "name": "Video call",
+      "inPerson": false
+    },
+    {
+      "id": "phone-call",
+      "name": "Phone call",
+      "inPerson": false
+    }
+  ],
+  "sessionLocations": [
+    {
+      "id": "clients-home",
+      "name": "Client's home"
+    },
+    {
+      "id": "hospital",
+      "name": "Hospital"
+    },
+    {
+      "id": "gp-surgery",
+      "name": "GP surgery"
+    },
+    {
+      "id": "community-centre",
+      "name": "Community centre"
+    },
+    {
+      "id": "other",
+      "name": "Other",
+      "isOther": true
+    }
+  ],
+  "questions": [
+    {
+      "id": "mobility-difficulty",
+      "text": "Do you find it difficult getting around?",
+      "type": "yes_no"
+    },
+    {
+      "id": "mobility-details",
+      "text": "What makes getting around difficult?",
+      "type": "text"
+    },
+    {
+      "id": "health-illnesses",
+      "text": "Do you have any illnesses?",
+      "type": "yes_no"
+    },
+    {
+      "id": "health-illness-type",
+      "text": "What type of illness?",
+      "type": "text"
+    },
+    {
+      "id": "health-seen-doctor",
+      "text": "Have you seen a doctor about it?",
+      "type": "yes_no"
+    },
+    {
+      "id": "finance-need-help",
+      "text": "Do you need financial help?",
+      "type": "yes_no"
+    },
+    {
+      "id": "finance-areas",
+      "text": "What do you need help with?",
+      "type": "multiple_choice",
+      "options": [
+        "Benefits",
+        "Bills",
+        "Debt",
+        "Housing costs",
+        "Other"
+      ]
+    },
+    {
+      "id": "social-lonely",
+      "text": "Do you often feel lonely?",
+      "type": "yes_no"
+    },
+    {
+      "id": "social-contact-frequency",
+      "text": "How often do you speak to family or friends?",
+      "type": "single_choice",
+      "options": [
+        "Every day",
+        "Every week",
+        "Every month",
+        "Less often"
+      ]
+    },
+    {
+      "id": "outcome-helped",
+      "text": "Do you feel this service has helped you?",
+      "type": "yes_no"
+    },
+    {
+      "id": "outcome-further-help",
+      "text": "Do you need further help?",
+      "type": "yes_no"
+    },
+    {
+      "id": "outcome-improved",
+      "text": "How much has your situation improved?",
+      "type": "scale",
+      "scale": {
+        "min": 1,
+        "max": 5,
+        "minLabel": "Not at all",
+        "maxLabel": "A lot"
+      }
+    },
+    {
+      "id": "outcome-comments",
+      "text": "Anything else you'd like to tell us?",
+      "type": "text"
+    }
+  ],
+  "questionSets": [
+    {
+      "id": "mobility",
+      "name": "Mobility",
+      "kind": "questionnaire",
+      "sensitive": false,
+      "attachByDefault": true,
+      "questionIds": [
+        "mobility-difficulty",
+        "mobility-details"
+      ]
+    },
+    {
+      "id": "health",
+      "name": "Health",
+      "kind": "questionnaire",
+      "sensitive": true,
+      "attachByDefault": true,
+      "questionIds": [
+        "health-illnesses",
+        "health-illness-type",
+        "health-seen-doctor"
+      ]
+    },
+    {
+      "id": "finance",
+      "name": "Finance",
+      "kind": "questionnaire",
+      "sensitive": true,
+      "attachByDefault": true,
+      "questionIds": [
+        "finance-need-help",
+        "finance-areas"
+      ]
+    },
+    {
+      "id": "social-contact",
+      "name": "Social contact",
+      "kind": "questionnaire",
+      "sensitive": false,
+      "attachByDefault": true,
+      "questionIds": [
+        "social-lonely",
+        "social-contact-frequency"
+      ]
+    },
+    {
+      "id": "outcome-standard",
+      "name": "Standard outcome",
+      "kind": "outcome",
+      "sensitive": false,
+      "questionIds": [
+        "outcome-helped",
+        "outcome-further-help",
+        "outcome-improved",
+        "outcome-comments"
+      ]
+    }
+  ]
+}

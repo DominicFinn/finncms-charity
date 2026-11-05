@@ -1,0 +1,100 @@
+{
+  "$comment": "Neutral starting configuration for any charity. Copy this file to make your own.",
+  "org": {
+    "name": "Our charity",
+    "retentionMonths": 36,
+    "retentionWarningDays": 60,
+    "allowedDomains": [],
+    "sessionTimeoutMinutes": 30,
+    "reminderLeadHours": 24,
+    "calendarSyncEnabled": false
+  },
+  "helpCategories": [
+    {
+      "id": "general",
+      "name": "General support"
+    }
+  ],
+  "sessionTypes": [
+    {
+      "id": "in-person",
+      "name": "In person",
+      "inPerson": true
+    },
+    {
+      "id": "video-call",
+      "name": "Video call",
+      "inPerson": false
+    },
+    {
+      "id": "phone-call",
+      "name": "Phone call",
+      "inPerson": false
+    }
+  ],
+  "sessionLocations": [
+    {
+      "id": "clients-home",
+      "name": "Client's home"
+    },
+    {
+      "id": "hospital",
+      "name": "Hospital"
+    },
+    {
+      "id": "gp-surgery",
+      "name": "GP surgery"
+    },
+    {
+      "id": "community-centre",
+      "name": "Community centre"
+    },
+    {
+      "id": "other",
+      "name": "Other",
+      "isOther": true
+    }
+  ],
+  "questions": [
+    {
+      "id": "outcome-helped",
+      "text": "Do you feel this service has helped you?",
+      "type": "yes_no"
+    },
+    {
+      "id": "outcome-further-help",
+      "text": "Do you need further help?",
+      "type": "yes_no"
+    },
+    {
+      "id": "outcome-improved",
+      "text": "How much has your situation improved?",
+      "type": "scale",
+      "scale": {
+        "min": 1,
+        "max": 5,
+        "minLabel": "Not at all",
+        "maxLabel": "A lot"
+      }
+    },
+    {
+      "id": "outcome-comments",
+      "text": "Anything else you'd like to tell us?",
+      "type": "text"
+    }
+  ],
+  "questionSets": [
+    {
+      "id": "outcome-standard",
+      "name": "Standard outcome",
+      "kind": "outcome",
+      "sensitive": false,
+      "questionIds": [
+        "outcome-helped",
+        "outcome-further-help",
+        "outcome-improved",
+        "outcome-comments"
+      ]
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import { Loading } from "./components/States";
 import { useAuth } from "./hooks/auth";
 import { AccountPage } from "./pages/Account";
 import { AdminPage } from "./pages/admin/Admin";
+import { AnalyticsPage } from "./pages/Analytics";
 import { AuditLogPage } from "./pages/AuditLog";
 import { CallbacksPage } from "./pages/Callbacks";
 import { ClientDetailPage } from "./pages/clients/ClientDetail";
@@ -51,6 +52,7 @@ export function App() {
         <Route path="meetings/:id" element={<RequirePermission need="meetings.view"><MeetingDetailPage /></RequirePermission>} />
         <Route path="meetings/:id/print" element={<RequirePermission need="meetings.view"><MeetingPrintPage /></RequirePermission>} />
         <Route path="reports" element={<RequirePermission need="reports.view"><ReportsPage /></RequirePermission>} />
+        <Route path="analytics" element={<RequirePermission need="analytics.view"><AnalyticsPage /></RequirePermission>} />
         <Route path="audit" element={<RequirePermission need="audit.view"><AuditLogPage /></RequirePermission>} />
         <Route path="admin/:section?" element={<AdminPage />} />
         <Route path="account" element={<AccountPage />} />

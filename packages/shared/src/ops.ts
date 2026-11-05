@@ -25,6 +25,12 @@ const isoDateTime = z.iso.datetime({ offset: true });
 const isoDate = z.iso.date();
 const shortText = z.string().trim().max(200);
 const longText = z.string().max(20_000);
+/** A web origin: scheme, host and optional port, with no path. */
+export const originSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .regex(/^https?:\/\/[a-z0-9.-]+(:\d{1,5})?$/, "Enter an origin such as https://www.example.org, with no path or trailing slash.");
 const limit = z.number().int().min(1).max(500).default(50);
 
 const answerValue = z.union([z.string().max(5000), z.number(), z.boolean(), z.array(z.string().max(500)), z.null()]);
@@ -756,6 +762,7 @@ export const ops = {
         referralRetentionDays: z.number().int().min(7).max(3650),
         quorumMinimum: z.number().int().min(1).max(100),
         quorumFraction: z.number().min(0).max(1),
+        analyticsAllowedOrigins: z.array(originSchema).max(20),
       })
       .partial(),
     permission: "config.manage",
@@ -1041,6 +1048,18 @@ export const ops = {
     mcp: false,
     write: false,
   }),
+
+  // Website analytics
+  "analytics.summary": op({
+    input: z
+      .object({ from: isoDate, to: isoDate })
+      .refine((v) => v.from <= v.to, { message: "The start date must be on or before the end date.", path: ["to"] })
+      .refine((v) => (Date.parse(v.to) - Date.parse(v.from)) / 86_400_000 <= 400, { message: "Choose a range of 400 days or less.", path: ["from"] }),
+    permission: "analytics.view",
+    description: "Website analytics for a date range: page views, visits, new and returning visitors, top pages, referrers, campaigns and devices. Contains no personal data.",
+    mcp: true,
+    write: false,
+  }),
 } as const;
 
 export type OpName = keyof typeof ops;
@@ -1176,6 +1195,7 @@ export interface OpOutputs {
   "tokens.revoke": { ok: true };
   "calendar.connectUrl": { url: string };
   "calendar.disconnect": { ok: true };
+  "analytics.summary": D.AnalyticsSummary;
   "trustees.list": D.Trustee[];
   "trustees.upsert": D.Trustee;
   "meetings.list": D.Meeting[];

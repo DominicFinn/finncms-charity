@@ -13,6 +13,7 @@ export function OrgSettingsAdmin() {
   const me = useMe();
   const [s, setS] = useState<OrgSettings>(me.org);
   const [domains, setDomains] = useState(me.org.allowedDomains.join("\n"));
+  const [origins, setOrigins] = useState((me.org.analyticsAllowedOrigins ?? []).join("\n"));
   const [saved, setSaved] = useState(false);
   const save = useOpMutation("org.updateSettings", ["me.get"]);
   const num = (k: keyof OrgSettings) => (e: React.ChangeEvent<HTMLInputElement>) => setS({ ...s, [k]: Number(e.target.value) });
@@ -27,7 +28,11 @@ export function OrgSettingsAdmin() {
             e.preventDefault();
             setSaved(false);
             save.mutate(
-              { ...s, allowedDomains: domains.split(/[\s,]+/).map((d) => d.trim().toLowerCase()).filter(Boolean) },
+              {
+                ...s,
+                allowedDomains: domains.split(/[\s,]+/).map((d) => d.trim().toLowerCase()).filter(Boolean),
+                analyticsAllowedOrigins: origins.split(/[\s,]+/).map((o) => o.trim().toLowerCase().replace(/\/+$/, "")).filter(Boolean),
+              },
               { onSuccess: () => setSaved(true) },
             );
           }}
@@ -100,6 +105,16 @@ export function OrgSettingsAdmin() {
                 />
               </Field>
             </div>
+          </fieldset>
+
+          <fieldset className="flex flex-col gap-3 rounded-lg border p-4">
+            <legend className="px-1 font-medium">Website analytics</legend>
+            <Field
+              label="Websites allowed to send page views"
+              hint="One per line, such as https://www.example.org. Include www and non-www versions if the site answers on both. Page views from anywhere else are refused."
+            >
+              <Textarea rows={2} value={origins} onChange={(e) => setOrigins(e.target.value)} />
+            </Field>
           </fieldset>
 
           <MutationError error={save.error} />

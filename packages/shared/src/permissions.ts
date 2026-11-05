@@ -29,6 +29,7 @@ export const PERMISSIONS = {
   "integrations.manage": "Create and revoke integration keys used by the website to send referrals",
   "meetings.view": "View trust meetings, registers, minutes, actions and papers",
   "meetings.manage": "Manage trustees, meetings, registers, minutes and actions",
+  "analytics.view": "View website analytics",
 } as const;
 
 export type Permission = keyof typeof PERMISSIONS;

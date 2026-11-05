@@ -328,6 +328,8 @@ export interface OrgSettings {
   quorumMinimum: number;
   /** Share of serving trustees who must be present, from 0 to 1. 0 means only the minimum applies. */
   quorumFraction: number;
+  /** Website origins allowed to send page views to the analytics endpoint, such as https://www.example.org. */
+  analyticsAllowedOrigins: string[];
 }
 
 export const DEFAULT_ORG_SETTINGS: OrgSettings = {
@@ -341,6 +343,7 @@ export const DEFAULT_ORG_SETTINGS: OrgSettings = {
   referralRetentionDays: 90,
   quorumMinimum: 3,
   quorumFraction: 0,
+  analyticsAllowedOrigins: [],
 };
 
 export interface Notification {
@@ -646,4 +649,47 @@ export interface Quorum {
   present: number;
   required: number;
   quorate: boolean;
+}
+
+/** One row of an analytics breakdown, such as a page and its views. */
+export interface AnalyticsRow {
+  label: string;
+  count: number;
+}
+
+export interface AnalyticsDay {
+  date: string;
+  views: number;
+  visitors: number;
+  sessions: number;
+}
+
+/**
+ * Website analytics for a date range, from the daily rollups. Visitors are
+ * counted once per day, so `visitors` over several days is a sum of daily
+ * visitors rather than distinct people. `newVisitors` is exact, because a
+ * visitor is only new once.
+ */
+export interface AnalyticsSummary {
+  from: string;
+  to: string;
+  totals: {
+    views: number;
+    sessions: number;
+    visitors: number;
+    newVisitors: number;
+    returningVisitors: number;
+    returningSessions: number;
+    events: number;
+  };
+  daily: AnalyticsDay[];
+  pages: AnalyticsRow[];
+  landingPages: AnalyticsRow[];
+  referrers: AnalyticsRow[];
+  sources: AnalyticsRow[];
+  mediums: AnalyticsRow[];
+  campaigns: AnalyticsRow[];
+  devices: AnalyticsRow[];
+  browsers: AnalyticsRow[];
+  eventNames: AnalyticsRow[];
 }

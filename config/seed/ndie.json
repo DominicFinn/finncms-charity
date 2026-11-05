@@ -9,7 +9,12 @@
     "reminderLeadHours": 24,
     "calendarSyncEnabled": false,
     "quorumMinimum": 3,
-    "quorumFraction": 0
+    "quorumFraction": 0,
+    "analyticsAllowedOrigins": [
+      "https://nottsderbyirish.org.uk",
+      "https://www.nottsderbyirish.org.uk",
+      "https://finnlytics-charity.web.app"
+    ]
   },
   "helpCategories": [
     {

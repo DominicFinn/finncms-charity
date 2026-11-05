@@ -3,6 +3,7 @@ import { calendarHandlers } from "../calendar.js";
 import { retentionHandlers } from "../jobs/retention.js";
 import { activityHandlers } from "./activity.js";
 import { adminHandlers } from "./admin.js";
+import { analyticsHandlers } from "./analytics.js";
 import { auditHandlers } from "./audit.js";
 import { clientHandlers } from "./clients.js";
 import { consentHandlers } from "./consent.js";
@@ -29,6 +30,7 @@ const groups = [
   calendarHandlers,
   referralHandlers,
   meetingHandlers,
+  analyticsHandlers,
 ];
 
 export const handlers = Object.assign({}, ...groups) as Handlers;

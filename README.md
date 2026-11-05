@@ -17,6 +17,7 @@ The first deployment is for Nottingham & Derby Irish Elder Support (NDIE).
 - **Audit**: every read and every change is logged with who, what, when and whether it came from the web app or from Claude.
 - **Claude**: a built in MCP server lets staff use Claude with the system, with exactly their own permissions and the same auditing.
 - **Google Calendar**: sessions and callbacks can appear in each person's own calendar.
+- **Website analytics**: page views, visits, new and returning visitors, top pages, sources and UTM campaigns from the charity's website, with no IP addresses stored. See [docs/analytics.md](docs/analytics.md).
 - **Theming**: one theme file sets colours, fonts, radius and logo. NDIE has an Irish theme and the default is neutral.
 
 It works on a phone. Staff can sign in and do everything from a mobile.

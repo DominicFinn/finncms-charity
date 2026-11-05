@@ -1,7 +1,7 @@
 import type { Theme } from "./types";
 
 /**
- * Nottingham and Derbyshire Irish Elders. Irish greens with a warm gold
+ * Nottingham & Derby Irish Elder Support. Irish greens with a warm gold
  * accent on cream. Many readers are older, so text is larger than the
  * default and contrast stays at WCAG AA or better.
  */

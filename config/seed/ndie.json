@@ -1,7 +1,7 @@
 {
-  "$comment": "Nottingham and Derbyshire Irish Elders. The retention period and the final lists of questions, categories and outcome measures are still to be confirmed with NDIE.",
+  "$comment": "Nottingham & Derby Irish Elder Support. The retention period and the final lists of questions, categories and outcome measures are still to be confirmed with NDIE.",
   "org": {
-    "name": "Nottingham and Derbyshire Irish Elders",
+    "name": "Nottingham & Derby Irish Elder Support",
     "retentionMonths": 36,
     "retentionWarningDays": 60,
     "allowedDomains": [],

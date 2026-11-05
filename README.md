@@ -2,7 +2,7 @@
 
 An open source client and case management system for small charities. It records the people a charity helps, the help given and the outcomes achieved, and reports on impact by place and type of help. It's built to be secure, fully audited and cheap to run on Firebase.
 
-The first deployment is for Nottingham and Derbyshire Irish Elders (NDIE).
+The first deployment is for Nottingham & Derby Irish Elder Support (NDIE).
 
 ## What it does
 
@@ -70,7 +70,7 @@ See [docs/mcp.md](docs/mcp.md). Each person creates a personal access token on t
 
 ## Adapting it for your charity
 
-Nothing specific to NDIE lives in the code. Copy `config/seed/default.json`, add your help categories, session types, questions and outcome measures, and seed your project with it. Copy `web/src/theme/default.ts` to make your own theme and set `VITE_THEME`.
+Run your own copy with your theme, logo and starting configuration in a `site/` folder, so updates to the shared code merge cleanly. [docs/own-deployment.md](docs/own-deployment.md) explains how.
 
 ## Open questions
 

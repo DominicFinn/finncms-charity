@@ -7,7 +7,7 @@ This takes about half an hour the first time.
 1. Create a project at https://console.firebase.google.com. Upgrade it to the Blaze plan, which Cloud Functions need. A small charity should stay inside the free allowances most months. Set a budget alert anyway.
 2. Create the Firestore database in **europe-west2 (London)**. The functions run in europe-west2, and Firestore triggers must be in the same region as the database. If you choose another UK or EU region, change `REGION` in `functions/src/core/firebase.ts` and the region in `firebase.json` to match.
 3. Create the default Cloud Storage bucket in the same region.
-4. In Authentication, enable the **Google** sign in provider. Under Settings > Authorized domains, add the domain the app will be served from.
+4. In Authentication, enable the **Google** sign in provider. Under Settings > Authorized domains, add the domain the app will be served from. The app signs in through its own domain, so in Google Cloud console > Google Auth Platform > Clients, open the "Web client (auto created by Google Service)" and add `https://<your-domain>` to Authorised JavaScript origins and `https://<your-domain>/__/auth/handler` to Authorised redirect URIs. Do this for `<project-id>.web.app` and any custom domain, or sign in fails with `redirect_uri_mismatch`.
 5. Register a web app in Project settings. The app reads its config from Firebase Hosting when it starts, so there is nothing to copy.
 
 ## 2. Configure

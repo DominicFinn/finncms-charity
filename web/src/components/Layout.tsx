@@ -93,7 +93,7 @@ export function Layout() {
   const primary = items.filter((i) => i.primary);
 
   return (
-    <div className="min-h-dvh md:grid md:grid-cols-[16rem_1fr] print:block">
+    <div className="min-h-dvh md:grid md:grid-cols-[16rem_minmax(0,1fr)] print:block">
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-2 focus:rounded focus:bg-background focus:p-2">
         Skip to content
       </a>

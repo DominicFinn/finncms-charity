@@ -39,7 +39,7 @@ export function AdminPage() {
   return (
     <>
       <PageHeader title="Admin" />
-      <div className="grid gap-5 md:grid-cols-[14rem_1fr]">
+      <div className="grid gap-5 md:grid-cols-[14rem_minmax(0,1fr)]">
         <nav aria-label="Admin sections" className="-mx-4 flex gap-1 overflow-x-auto px-4 md:mx-0 md:flex-col md:px-0">
           {allowed.map((s) => (
             <NavLink

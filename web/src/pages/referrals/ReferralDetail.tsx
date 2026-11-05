@@ -23,7 +23,7 @@ const REFRESH = ["referrals.list", "referrals.get", "dashboard.get"] as const;
 function Row({ label, children }: { label: string; children: ReactNode }) {
   if (children === undefined || children === null || children === "") return null;
   return (
-    <div className="grid gap-0.5 sm:grid-cols-[12rem_1fr] sm:gap-3">
+    <div className="grid gap-0.5 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-3">
       <dt className="text-sm text-muted-foreground">{label}</dt>
       <dd className="whitespace-pre-wrap break-words">{children}</dd>
     </div>
@@ -54,7 +54,7 @@ function ReferralView({ referral: r, duplicates }: { referral: Referral; duplica
         title={<span className="flex flex-wrap items-center gap-3">{title} <ReferralStatusBadge status={r.status} /></span>}
         description={`${r.reference} · ${REFERRER_LABEL[r.referrerType]} via ${r.source} · received ${formatDateTime(r.createdAt)}`}
       />
-      <div className="grid gap-4 lg:grid-cols-[1fr_22rem]">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="flex flex-col gap-4">
           {r.anonymisedAt && (
             <Alert variant="info">The personal details on this referral were removed on {formatDateTime(r.anonymisedAt)} under the retention policy.</Alert>

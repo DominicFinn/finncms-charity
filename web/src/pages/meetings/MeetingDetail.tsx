@@ -217,7 +217,7 @@ function AgendaEditor({ d, editable }: { d: MeetingDetail; editable: boolean }) 
                 </div>
               </CardHeader>
               <CardContent className="flex flex-col gap-3">
-                <div className="grid gap-3 sm:grid-cols-[2fr_1fr]">
+                <div className="grid gap-3 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
                   <Field label="Title"><Input required value={item.title} onChange={(e) => set(item.key, { title: e.target.value })} /></Field>
                   <Field label="Presenter"><Input value={item.presenter ?? ""} onChange={(e) => set(item.key, { presenter: e.target.value })} /></Field>
                 </div>

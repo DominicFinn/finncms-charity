@@ -46,6 +46,13 @@
         }
       },
       {
+        "source": "/api/collect",
+        "function": {
+          "functionId": "collect",
+          "region": "europe-west2"
+        }
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }

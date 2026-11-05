@@ -45,4 +45,5 @@ export const callbackReminders = onSchedule({ schedule: "every 15 minutes", time
 });
 
 export { mcp } from "./mcp.js";
+export { collect } from "./analytics/collect.js";
 export { calendarOAuthCallback, syncCallbackToCalendar, syncSessionToCalendar } from "./calendar.js";

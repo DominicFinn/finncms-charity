@@ -21,6 +21,12 @@ const isoDateTime = z.iso.datetime({ offset: true });
 const isoDate = z.iso.date();
 const shortText = z.string().trim().max(200);
 const longText = z.string().max(20_000);
+/** A web origin: scheme, host and optional port, with no path. */
+export const originSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .regex(/^https?:\/\/[a-z0-9.-]+(:\d{1,5})?$/, "Enter an origin such as https://www.example.org, with no path or trailing slash.");
 const limit = z.number().int().min(1).max(500).default(50);
 
 const answerValue = z.union([z.string().max(5000), z.number(), z.boolean(), z.array(z.string().max(500)), z.null()]);
@@ -657,6 +663,7 @@ export const ops = {
         sessionTimeoutMinutes: z.number().int().min(5).max(24 * 60),
         reminderLeadHours: z.number().int().min(1).max(24 * 14),
         calendarSyncEnabled: z.boolean(),
+        analyticsAllowedOrigins: z.array(originSchema).max(20),
       })
       .partial(),
     permission: "config.manage",
@@ -731,6 +738,18 @@ export const ops = {
     description: "Disconnect your Google Calendar.",
     mcp: false,
     write: true,
+  }),
+
+  // Website analytics
+  "analytics.summary": op({
+    input: z
+      .object({ from: isoDate, to: isoDate })
+      .refine((v) => v.from <= v.to, { message: "The start date must be on or before the end date.", path: ["to"] })
+      .refine((v) => (Date.parse(v.to) - Date.parse(v.from)) / 86_400_000 <= 400, { message: "Choose a range of 400 days or less.", path: ["from"] }),
+    permission: "analytics.view",
+    description: "Website analytics for a date range: page views, visits, new and returning visitors, top pages, referrers, campaigns and devices. Contains no personal data.",
+    mcp: true,
+    write: false,
   }),
 } as const;
 
@@ -838,6 +857,7 @@ export interface OpOutputs {
   "tokens.revoke": { ok: true };
   "calendar.connectUrl": { url: string };
   "calendar.disconnect": { ok: true };
+  "analytics.summary": D.AnalyticsSummary;
 }
 
 // Compile time check that every op has an output type and vice versa.

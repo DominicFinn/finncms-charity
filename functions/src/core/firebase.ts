@@ -38,6 +38,9 @@ export const C = {
   apiTokens: "apiTokens",
   calendarTokens: "calendarTokens",
   oauthStates: "oauthStates",
+  analyticsEvents: "analyticsEvents",
+  analyticsVisitors: "analyticsVisitors",
+  analyticsDaily: "analyticsDaily",
 } as const;
 
 export { Timestamp };

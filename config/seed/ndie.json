@@ -7,7 +7,12 @@
     "allowedDomains": [],
     "sessionTimeoutMinutes": 30,
     "reminderLeadHours": 24,
-    "calendarSyncEnabled": false
+    "calendarSyncEnabled": false,
+    "analyticsAllowedOrigins": [
+      "https://nottsderbyirish.org.uk",
+      "https://www.nottsderbyirish.org.uk",
+      "https://finnlytics-charity.web.app"
+    ]
   },
   "helpCategories": [
     {

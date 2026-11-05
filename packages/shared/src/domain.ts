@@ -321,6 +321,8 @@ export interface OrgSettings {
   /** Hours before a callback is due that a reminder is sent. */
   reminderLeadHours: number;
   calendarSyncEnabled: boolean;
+  /** Website origins allowed to send page views to the analytics endpoint, such as https://www.example.org. */
+  analyticsAllowedOrigins: string[];
 }
 
 export const DEFAULT_ORG_SETTINGS: OrgSettings = {
@@ -331,6 +333,7 @@ export const DEFAULT_ORG_SETTINGS: OrgSettings = {
   sessionTimeoutMinutes: 30,
   reminderLeadHours: 24,
   calendarSyncEnabled: false,
+  analyticsAllowedOrigins: [],
 };
 
 export interface Notification {
@@ -420,4 +423,47 @@ export interface RetentionCandidate {
   lastActivityAt: ISODate;
   anonymiseAfter: ISODate;
   heldBySafeguarding: boolean;
+}
+
+/** One row of an analytics breakdown, such as a page and its views. */
+export interface AnalyticsRow {
+  label: string;
+  count: number;
+}
+
+export interface AnalyticsDay {
+  date: string;
+  views: number;
+  visitors: number;
+  sessions: number;
+}
+
+/**
+ * Website analytics for a date range, from the daily rollups. Visitors are
+ * counted once per day, so `visitors` over several days is a sum of daily
+ * visitors rather than distinct people. `newVisitors` is exact, because a
+ * visitor is only new once.
+ */
+export interface AnalyticsSummary {
+  from: string;
+  to: string;
+  totals: {
+    views: number;
+    sessions: number;
+    visitors: number;
+    newVisitors: number;
+    returningVisitors: number;
+    returningSessions: number;
+    events: number;
+  };
+  daily: AnalyticsDay[];
+  pages: AnalyticsRow[];
+  landingPages: AnalyticsRow[];
+  referrers: AnalyticsRow[];
+  sources: AnalyticsRow[];
+  mediums: AnalyticsRow[];
+  campaigns: AnalyticsRow[];
+  devices: AnalyticsRow[];
+  browsers: AnalyticsRow[];
+  eventNames: AnalyticsRow[];
 }

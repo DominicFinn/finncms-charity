@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { defaultTheme } from "./default";
-import { selectTheme, themeCss, tokenToVar } from "./index";
+import { selectTheme, siteTheme, themeCss, tokenToVar } from "./index";
 import { ndieTheme } from "./ndie";
 
 describe("theme", () => {
@@ -9,10 +9,12 @@ describe("theme", () => {
     expect(tokenToVar("background")).toBe("--background");
   });
 
-  it("falls back to the default theme", () => {
-    expect(selectTheme(undefined)).toBe(defaultTheme);
-    expect(selectTheme("nope")).toBe(defaultTheme);
+  it("falls back to the site theme when there is one, otherwise the default", () => {
+    const fallback = siteTheme ?? defaultTheme;
+    expect(selectTheme(undefined)).toBe(fallback);
+    expect(selectTheme("nope")).toBe(fallback);
     expect(selectTheme("ndie")).toBe(ndieTheme);
+    expect(selectTheme("default")).toBe(defaultTheme);
   });
 
   it("writes light and dark variables", () => {

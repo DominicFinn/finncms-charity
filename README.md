@@ -40,7 +40,7 @@ You need Node 22 or later, Java 21 or later (for the Firebase emulators) and the
 
 ```sh
 npm install
-cp web/.env.example web/.env.local          # set VITE_USE_EMULATORS=true, any values for the rest
+cp web/.env.example web/.env.development.local   # set VITE_USE_EMULATORS=true. Only `npm run dev` reads this name, so it never leaks into a deploy build
 printf 'BOOTSTRAP_SUPERUSER_EMAIL=you@example.org\nAPP_URL=http://localhost:5173\n' > functions/.env.local
 printf 'GOOGLE_OAUTH_CLIENT_SECRET=unused\n' > functions/.secret.local
 npm run build -w functions

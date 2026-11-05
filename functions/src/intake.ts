@@ -191,7 +191,7 @@ export async function handleIntake(req: IntakeRequest, now = new Date()): Promis
   return { status: 201, body: { reference: data.reference } };
 }
 
-export const referralsIntake = onRequest({ region: REGION, maxInstances: 3, concurrency: 20, timeoutSeconds: 30, memory: "256MiB" }, async (req, res) => {
+export const referralsIntake = onRequest({ region: REGION, invoker: "public", maxInstances: 3, concurrency: 20, timeoutSeconds: 30, memory: "256MiB" }, async (req, res) => {
   try {
     const out = await handleIntake({ method: req.method, headers: req.headers, rawBody: req.rawBody, body: req.body });
     res.status(out.status).set({ "Cache-Control": "no-store", ...(out.headers ?? {}) }).json(out.body);

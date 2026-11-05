@@ -95,7 +95,7 @@ export const calendarHandlers: HandlerGroup = {
 };
 
 /** OAuth redirect target, served at /oauth/calendar through a Hosting rewrite. */
-export const calendarOAuthCallback = onRequest({ region: REGION, secrets: [GOOGLE_OAUTH_CLIENT_SECRET] }, async (req, res) => {
+export const calendarOAuthCallback = onRequest({ region: REGION, invoker: "public", secrets: [GOOGLE_OAUTH_CLIENT_SECRET] }, async (req, res) => {
   const app = APP_URL.value().replace(/\/$/, "");
   const state = String(req.query.state ?? "");
   const code = String(req.query.code ?? "");

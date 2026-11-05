@@ -273,7 +273,7 @@ export async function processCollect(req: CollectRequest): Promise<CollectResult
   return { status: 204, headers };
 }
 
-export const collect = onRequest({ region: REGION, memory: "256MiB", maxInstances: 3, concurrency: 80, timeoutSeconds: 10 }, async (req, res) => {
+export const collect = onRequest({ region: REGION, invoker: "public", memory: "256MiB", maxInstances: 3, concurrency: 80, timeoutSeconds: 10 }, async (req, res) => {
   try {
     const result = await processCollect({
       method: req.method,

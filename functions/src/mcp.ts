@@ -93,7 +93,7 @@ export function buildServer(ctx: Ctx): McpServer {
   return server;
 }
 
-export const mcp = onRequest({ region: REGION, maxInstances: 5, timeoutSeconds: 120 }, async (req, res) => {
+export const mcp = onRequest({ region: REGION, invoker: "public", maxInstances: 5, timeoutSeconds: 120 }, async (req, res) => {
   if (req.method !== "POST") {
     // Stateless server: no SSE stream to resume and no session to delete.
     res.status(405).set("Allow", "POST").json({ jsonrpc: "2.0", error: { code: -32000, message: "Method not allowed." }, id: null });

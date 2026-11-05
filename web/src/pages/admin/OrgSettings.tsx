@@ -79,6 +79,29 @@ export function OrgSettingsAdmin() {
             />
           </fieldset>
 
+          <fieldset className="flex flex-col gap-3 rounded-lg border p-4">
+            <legend className="px-1 font-medium">Trust meetings</legend>
+            <p className="text-sm text-muted-foreground">
+              A meeting is quorate when at least this many trustees are present, or the share of serving trustees below if that is more. Check
+              your governing document for the figure.
+            </p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Minimum trustees present">
+                <Input type="number" min={1} max={100} required value={s.quorumMinimum} onChange={num("quorumMinimum")} />
+              </Field>
+              <Field label="Share of serving trustees" hint="As a percentage. 0 means only the minimum applies.">
+                <Input
+                  type="number"
+                  min={0}
+                  max={100}
+                  required
+                  value={Math.round(s.quorumFraction * 100)}
+                  onChange={(e) => setS({ ...s, quorumFraction: Number(e.target.value) / 100 })}
+                />
+              </Field>
+            </div>
+          </fieldset>
+
           <MutationError error={save.error} />
           {saved && <Alert variant="info">Settings saved.</Alert>}
           <Button type="submit" className="self-start" disabled={save.isPending}>Save settings</Button>

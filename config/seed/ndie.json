@@ -7,7 +7,9 @@
     "allowedDomains": [],
     "sessionTimeoutMinutes": 30,
     "reminderLeadHours": 24,
-    "calendarSyncEnabled": false
+    "calendarSyncEnabled": false,
+    "quorumMinimum": 3,
+    "quorumFraction": 0
   },
   "helpCategories": [
     {

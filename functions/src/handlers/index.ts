@@ -8,6 +8,7 @@ import { clientHandlers } from "./clients.js";
 import { consentHandlers } from "./consent.js";
 import { fileHandlers } from "./files.js";
 import { meHandlers } from "./me.js";
+import { meetingHandlers } from "./meetings.js";
 import { questionnaireHandlers } from "./questionnaires.js";
 import { referralHandlers } from "./referrals.js";
 import { reportHandlers } from "./reports.js";
@@ -27,6 +28,7 @@ const groups = [
   retentionHandlers,
   calendarHandlers,
   referralHandlers,
+  meetingHandlers,
 ];
 
 export const handlers = Object.assign({}, ...groups) as Handlers;

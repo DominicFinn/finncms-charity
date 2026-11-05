@@ -41,6 +41,10 @@ export const C = {
   referrals: "referrals",
   integrationKeys: "integrationKeys",
   integrationUsage: "integrationUsage",
+  trustees: "trustees",
+  meetings: "meetings",
+  meetingActions: "meetingActions",
+  meetingPapers: "meetingPapers",
 } as const;
 
 export { Timestamp };

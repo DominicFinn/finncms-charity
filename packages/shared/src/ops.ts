@@ -7,7 +7,9 @@
 import { z } from "zod";
 import type * as D from "./domain.js";
 import {
+  ATTENDANCE_STATUSES,
   CONSENT_PURPOSES,
+  MEETING_TYPES,
   CONTACT_METHODS,
   QUESTION_TYPES,
   REFERRAL_STATUSES,
@@ -134,6 +136,44 @@ export const referralSubmissionSchema = z
     }
   });
 export type ReferralSubmission = z.output<typeof referralSubmissionSchema>;
+export const trusteeSchema = z.object({
+  id: id.optional(),
+  name: shortText.min(1),
+  role: shortText.min(1),
+  // "" clears the field on update.
+  email: z.email().optional().or(z.literal("")),
+  startDate: isoDate.optional().or(z.literal("")),
+  endDate: isoDate.optional().or(z.literal("")),
+  active: z.boolean().default(true),
+  userUid: id.optional().or(z.literal("")),
+});
+
+export const agendaItemSchema = z.object({
+  id: id.optional(),
+  title: shortText.min(1),
+  presenter: shortText.optional(),
+  notes: longText.optional(),
+  minutes: longText.optional(),
+});
+
+/** Meeting fields without defaults, so a patch only changes what it names. */
+const meetingFields = z.object({
+  title: shortText.min(1),
+  type: z.enum(MEETING_TYPES),
+  startsAt: isoDateTime,
+  endsAt: isoDateTime.optional().or(z.literal("")),
+  location: shortText.optional(),
+  onlineLink: z.url({ protocol: /^https$/ }).max(500).optional().or(z.literal("")),
+  agenda: z.array(agendaItemSchema).max(60),
+  generalMinutes: longText.optional(),
+});
+
+const actionFields = z.object({
+  description: z.string().trim().min(1).max(2000),
+  ownerTrusteeId: id.optional().or(z.literal("")),
+  ownerUid: id.optional().or(z.literal("")),
+  dueDate: isoDate.optional().or(z.literal("")),
+});
 
 const dimension = z.enum(REPORT_DIMENSIONS).nullable().default(null);
 
@@ -714,6 +754,8 @@ export const ops = {
         reminderLeadHours: z.number().int().min(1).max(24 * 14),
         calendarSyncEnabled: z.boolean(),
         referralRetentionDays: z.number().int().min(7).max(3650),
+        quorumMinimum: z.number().int().min(1).max(100),
+        quorumFraction: z.number().min(0).max(1),
       })
       .partial(),
     permission: "config.manage",
@@ -867,6 +909,138 @@ export const ops = {
     mcp: false,
     write: true,
   }),
+
+  // Trust meetings
+  "trustees.list": op({
+    input: z.object({ includeInactive: z.boolean().default(false) }),
+    permission: "meetings.view",
+    description: "List trustees and board members. Former trustees are included when asked.",
+    mcp: true,
+    write: false,
+  }),
+  "trustees.upsert": op({
+    input: trusteeSchema,
+    permission: "meetings.manage",
+    description: "Add a trustee, or update one when an id is given. Trustees are never deleted; set an end date when they stand down.",
+    mcp: false,
+    write: true,
+  }),
+  "meetings.list": op({
+    input: z.object({ from: isoDateTime.optional(), to: isoDateTime.optional(), limit }),
+    permission: "meetings.view",
+    description: "List trust meetings between two dates, soonest first.",
+    mcp: true,
+    write: false,
+  }),
+  "meetings.get": op({
+    input: z.object({ id }),
+    permission: "meetings.view",
+    description:
+      "Get a meeting with its agenda, minutes, register, quorum, the actions raised at it, open actions from earlier meetings and its papers.",
+    mcp: true,
+    write: false,
+  }),
+  "meetings.create": op({
+    input: meetingFields.extend({
+      agenda: meetingFields.shape.agenda.default([]),
+    }),
+    permission: "meetings.manage",
+    description: "Schedule a trust meeting, optionally with its agenda.",
+    mcp: true,
+    write: true,
+  }),
+  "meetings.update": op({
+    input: z.object({ id, patch: meetingFields.partial() }),
+    permission: "meetings.manage",
+    description: "Update a meeting's details, agenda or minutes. Approved minutes can't be changed.",
+    mcp: true,
+    write: true,
+  }),
+  "meetings.setRegister": op({
+    input: z.object({
+      id,
+      attendance: z.array(z.object({ trusteeId: id, status: z.enum(ATTENDANCE_STATUSES) })).max(100),
+      guests: z.array(z.object({ name: shortText.min(1), organisation: shortText.optional() })).max(50).default([]),
+      staffUids: z.array(id).max(50).default([]),
+    }),
+    permission: "meetings.manage",
+    description: "Record who attended a meeting: trustees present, sending apologies or absent, guests and staff.",
+    mcp: true,
+    write: true,
+  }),
+  "meetings.approveMinutes": op({
+    input: z.object({ id, atMeetingId: id.optional() }),
+    permission: "meetings.manage",
+    description: "Mark a meeting's minutes as approved, usually at a later meeting. Approved minutes are locked.",
+    mcp: false,
+    write: true,
+  }),
+  "meetings.reopenMinutes": op({
+    input: z.object({ id, reason: z.string().trim().min(1).max(1000) }),
+    permission: "meetings.manage",
+    description: "Return approved minutes to draft so a correction can be made. The reason is kept in the audit log.",
+    mcp: false,
+    write: true,
+  }),
+  "meetingActions.list": op({
+    input: z.object({
+      meetingId: id.optional(),
+      status: z.enum(["open", "done"]).optional(),
+      mine: z.boolean().default(false),
+      overdue: z.boolean().default(false),
+      limit,
+    }),
+    permission: "meetings.view",
+    description: "List actions from trust meetings. Filter by meeting, status, your own or overdue.",
+    mcp: true,
+    write: false,
+  }),
+  "meetingActions.create": op({
+    input: z.object({ meetingId: id, ...actionFields.shape }),
+    permission: "meetings.manage",
+    description: "Record an action raised at a meeting, with an owner and due date.",
+    mcp: true,
+    write: true,
+  }),
+  "meetingActions.update": op({
+    input: z.object({
+      id,
+      patch: actionFields.partial().extend({ status: z.enum(["open", "done"]).optional() }),
+      /** The meeting at which it was reported done. */
+      atMeetingId: id.optional(),
+    }),
+    permission: "meetings.manage",
+    description: "Update an action, for example mark it done at a meeting.",
+    mcp: true,
+    write: true,
+  }),
+  "meetingPapers.createUpload": op({
+    input: z.object({
+      meetingId: id,
+      fileName: z.string().trim().min(1).max(200),
+      contentType: z.string().max(100),
+      sizeBytes: z.number().int().min(1).max(25 * 1024 * 1024),
+      description: z.string().trim().min(1).max(1000),
+    }),
+    permission: "meetings.manage",
+    description: "Start uploading a paper for a meeting. Returns a short lived URL to send the file to.",
+    mcp: false,
+    write: true,
+  }),
+  "meetingPapers.completeUpload": op({
+    input: z.object({ id }),
+    permission: "meetings.manage",
+    description: "Confirm a meeting paper upload has finished.",
+    mcp: false,
+    write: true,
+  }),
+  "meetingPapers.getDownloadUrl": op({
+    input: z.object({ id }),
+    permission: "meetings.view",
+    description: "Get a short lived URL to download a meeting paper.",
+    mcp: false,
+    write: false,
+  }),
 } as const;
 
 export type OpName = keyof typeof ops;
@@ -901,6 +1075,24 @@ export interface Dashboard {
   retentionDue?: number;
   /** Referrals with status new. Only for users with referrals.view. */
   newReferrals?: number;
+  /** Open meeting actions past their due date. Only for people who can see meetings. */
+  overdueMeetingActions?: number;
+}
+
+export interface MeetingDetail {
+  meeting: D.Meeting;
+  quorum: D.Quorum;
+  /** Everyone named on the register: trustees serving on the day plus any former trustee recorded. */
+  trustees: D.Trustee[];
+  /** Actions raised at this meeting. */
+  actions: D.MeetingAction[];
+  /** Actions from earlier meetings still open, to review at this one. */
+  carriedForward: D.MeetingAction[];
+  /** Earlier actions reported done at this meeting. */
+  completedHere: D.MeetingAction[];
+  papers: D.MeetingPaper[];
+  /** Title and date of the meeting that approved these minutes. */
+  approvedAtMeeting?: { id: string; title: string; startsAt: D.ISODate };
 }
 
 /** What each operation returns. */
@@ -984,6 +1176,22 @@ export interface OpOutputs {
   "tokens.revoke": { ok: true };
   "calendar.connectUrl": { url: string };
   "calendar.disconnect": { ok: true };
+  "trustees.list": D.Trustee[];
+  "trustees.upsert": D.Trustee;
+  "meetings.list": D.Meeting[];
+  "meetings.get": MeetingDetail;
+  "meetings.create": D.Meeting;
+  "meetings.update": D.Meeting;
+  "meetings.setRegister": D.Meeting;
+  "meetings.approveMinutes": D.Meeting;
+  "meetings.reopenMinutes": D.Meeting;
+  "meetingActions.list": (D.MeetingAction & { meetingTitle?: string })[];
+  "meetingActions.create": D.MeetingAction;
+  "meetingActions.update": D.MeetingAction;
+  /** Send the file body to uploadUrl with uploadMethod and exactly these headers. */
+  "meetingPapers.createUpload": { paper: D.MeetingPaper; uploadUrl: string; uploadMethod: "PUT" | "POST"; uploadHeaders: Record<string, string> };
+  "meetingPapers.completeUpload": D.MeetingPaper;
+  "meetingPapers.getDownloadUrl": { url: string; expiresAt: D.ISODate };
 }
 
 // Compile time check that every op has an output type and vice versa.

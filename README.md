@@ -12,6 +12,7 @@ The first deployment is for Nottingham & Derby Irish Elder Support (NDIE).
 - **Referrals**: a public form on the charity's website sends referrals here through a server to server key, with bot protection and rate limits. Staff triage them, then accept (creating or linking a client) or decline. See [docs/referrals.md](docs/referrals.md).
 - **Safeguarding**: concerns with severity, status, a lead and a full history. Clients with open concerns are flagged to people allowed to see them.
 - **Consent and GDPR**: consent records per purpose, restrictions when consent is withdrawn, subject access export and right to erasure.
+- **Trust meetings**: trustees, agendas, minutes, a register with a quorum check, actions that carry forward until they're done, meeting papers and a printable copy for signing. See [docs/meetings.md](docs/meetings.md).
 - **Retention**: a daily job anonymises clients after a configurable period of inactivity. It keeps what's needed for impact reporting and nothing that identifies the person.
 - **Audit**: every read and every change is logged with who, what, when and whether it came from the web app or from Claude.
 - **Claude**: a built in MCP server lets staff use Claude with the system, with exactly their own permissions and the same auditing.

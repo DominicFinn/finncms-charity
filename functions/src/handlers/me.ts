@@ -1,4 +1,4 @@
-import { type Callback, type Notification, type Session } from "@ccm/shared";
+import { londonDate, type Callback, type Notification, type Session } from "@ccm/shared";
 import { Timestamp } from "firebase-admin/firestore";
 import type { UserDoc } from "../core/context.js";
 import type { HandlerGroup } from "../core/dispatch.js";
@@ -20,7 +20,7 @@ export const meHandlers: HandlerGroup = {
     const now = Timestamp.now();
     const weekAhead = Timestamp.fromMillis(now.toMillis() + 7 * 86_400_000);
     const canSee = ctx.can("clients.view");
-    const [callbacks, sessions, notifications, safeguarding, retention, referrals] = await Promise.all([
+    const [callbacks, sessions, notifications, safeguarding, retention, referrals, meetingActions] = await Promise.all([
       canSee
         ? db.collection(C.callbacks).where("assigneeUid", "==", ctx.uid).where("status", "==", "open").orderBy("dueAt").limit(100).get()
         : null,
@@ -45,6 +45,14 @@ export const meHandlers: HandlerGroup = {
             .get()
         : null,
       ctx.can("referrals.view") ? db.collection(C.referrals).where("status", "==", "new").count().get() : null,
+      ctx.can("meetings.view")
+        ? db
+            .collection(C.meetingActions)
+            .where("status", "==", "open")
+            .where("dueDate", "<", londonDate(now.toDate().toISOString()))
+            .count()
+            .get()
+        : null,
     ]);
 
     const cbs = callbacks?.docs.map((d) => docOut<Callback>(d)) ?? [];
@@ -60,6 +68,7 @@ export const meHandlers: HandlerGroup = {
       openSafeguarding: safeguarding?.data().count,
       newReferrals: referrals?.data().count,
       retentionDue: retention?.data().count,
+      overdueMeetingActions: meetingActions?.data().count,
     };
   },
 

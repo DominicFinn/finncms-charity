@@ -11,6 +11,7 @@ import { QuestionsAdmin } from "./Questions";
 import { QuestionSetsAdmin } from "./QuestionSets";
 import { RetentionAdmin } from "./Retention";
 import { RolesAdmin } from "./Roles";
+import { TrusteesAdmin } from "./Trustees";
 import { UsersAdmin } from "./Users";
 
 const SECTIONS: { id: string; label: string; need: PermissionRequirement; render: () => React.ReactNode }[] = [
@@ -21,6 +22,7 @@ const SECTIONS: { id: string; label: string; need: PermissionRequirement; render
   { id: "help-categories", label: "Help categories", need: "config.manage", render: () => <HelpCategoriesAdmin /> },
   { id: "session-types", label: "Session types", need: "config.manage", render: () => <SessionTypesAdmin /> },
   { id: "session-locations", label: "Session locations", need: "config.manage", render: () => <SessionLocationsAdmin /> },
+  { id: "trustees", label: "Trustees", need: "meetings.manage", render: () => <TrusteesAdmin /> },
   { id: "settings", label: "Organisation settings", need: "config.manage", render: () => <OrgSettingsAdmin /> },
   { id: "retention", label: "Retention", need: "retention.manage", render: () => <RetentionAdmin /> },
   { id: "integrations", label: "Integration keys", need: "integrations.manage", render: () => <IntegrationKeysAdmin /> },

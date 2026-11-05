@@ -10,6 +10,8 @@ import {
   CONSENT_PURPOSES,
   CONTACT_METHODS,
   QUESTION_TYPES,
+  REFERRAL_STATUSES,
+  REFERRER_TYPES,
   REPORT_DIMENSIONS,
   SAFEGUARDING_SEVERITIES,
   SAFEGUARDING_STATUSES,
@@ -78,6 +80,60 @@ export const reportFiltersSchema = z.object({
   staffUid: id.optional(),
 });
 export type ReportFilters = z.infer<typeof reportFiltersSchema>;
+
+/** Optional text from a public form: blank means not given. */
+const formText = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max)
+    .optional()
+    .transform((v) => (v ? v : undefined));
+
+/**
+ * A referral as sent by an integration, such as the charity's website. Strict:
+ * unknown fields are rejected, so a form can't smuggle extra data in. Every
+ * field is length capped. The person being referred must agree to be
+ * contacted, or the referrer must say they know about the referral.
+ */
+export const referralSubmissionSchema = z
+  .object({
+    referrerType: z.enum(REFERRER_TYPES),
+    referrerName: formText(120),
+    referrerRelationship: formText(120),
+    referrerOrganisation: formText(160),
+    referrerPhone: formText(40),
+    referrerEmail: z.email().max(254).optional().or(z.literal("").transform(() => undefined)),
+    firstName: z.string().trim().min(1).max(80),
+    lastName: z.string().trim().min(1).max(80),
+    addressLine: formText(200),
+    town: formText(80),
+    postcode: formText(10),
+    phone: formText(40),
+    email: z.email().max(254).optional().or(z.literal("").transform(() => undefined)),
+    preferredContactMethod: z.enum(CONTACT_METHODS).optional(),
+    helpNeeded: z.string().trim().min(1).max(3000),
+    helpCategoryHints: z.array(z.string().trim().min(1).max(80)).max(10).default([]),
+    personAware: z.boolean().default(false),
+    consentToContact: z.literal(true),
+    heardAbout: formText(200),
+    sourceUrl: z.url().max(500).optional(),
+    /** Lets the sender retry safely: the same id on the same key returns the first referral. */
+    submissionId: z.string().trim().min(8).max(100).regex(/^[A-Za-z0-9_-]+$/).optional(),
+  })
+  .strict()
+  .superRefine((r, ctx) => {
+    if (!r.phone && !r.email && !r.addressLine) {
+      ctx.addIssue({ code: "custom", path: ["phone"], message: "Give at least one way to contact the person." });
+    }
+    if (r.referrerType !== "self") {
+      if (!r.referrerName) ctx.addIssue({ code: "custom", path: ["referrerName"], message: "Required when referring someone else." });
+      if (!r.referrerPhone && !r.referrerEmail) {
+        ctx.addIssue({ code: "custom", path: ["referrerPhone"], message: "Give a phone number or email for the referrer." });
+      }
+    }
+  });
+export type ReferralSubmission = z.output<typeof referralSubmissionSchema>;
 
 const dimension = z.enum(REPORT_DIMENSIONS).nullable().default(null);
 
@@ -657,6 +713,7 @@ export const ops = {
         sessionTimeoutMinutes: z.number().int().min(5).max(24 * 60),
         reminderLeadHours: z.number().int().min(1).max(24 * 14),
         calendarSyncEnabled: z.boolean(),
+        referralRetentionDays: z.number().int().min(7).max(3650),
       })
       .partial(),
     permission: "config.manage",
@@ -694,6 +751,84 @@ export const ops = {
     description: "Clients due for anonymisation within the warning period.",
     mcp: false,
     write: false,
+  }),
+
+  // Referrals
+  "referrals.list": op({
+    input: z.object({
+      /** "open" means new or contacted. */
+      status: z.enum([...REFERRAL_STATUSES, "open", "all"]).default("open"),
+      assigneeUid: id.optional(),
+      limit,
+    }),
+    permission: "referrals.view",
+    description: "List referrals, newest first. Status 'open' (the default) means new or contacted.",
+    mcp: true,
+    write: false,
+  }),
+  "referrals.get": op({
+    input: z.object({ id }),
+    permission: "referrals.view",
+    description: "Get a referral with possible matching clients already on the system.",
+    mcp: true,
+    write: false,
+  }),
+  "referrals.update": op({
+    input: z.object({
+      id,
+      status: z.enum(["new", "contacted"]).optional(),
+      // "" unassigns.
+      assigneeUid: id.optional().or(z.literal("")),
+      notes: z.string().max(5000).optional(),
+    }),
+    permission: "referrals.manage",
+    description: "Update a referral's status (new or contacted), who it's assigned to, or the triage notes.",
+    mcp: true,
+    write: true,
+  }),
+  "referrals.accept": op({
+    input: z.object({
+      id,
+      /** Link to this existing client instead of creating a new one. */
+      existingClientId: id.optional(),
+      helpCategoryIds: z.array(id).max(50).default([]),
+    }),
+    permission: "referrals.manage",
+    description: "Accept a referral: creates a client from it (or links an existing client) and adds the referral details as a note.",
+    mcp: true,
+    write: true,
+  }),
+  "referrals.decline": op({
+    input: z.object({ id, reason: z.string().trim().min(1).max(1000) }),
+    permission: "referrals.manage",
+    description: "Decline a referral with a reason.",
+    mcp: true,
+    write: true,
+  }),
+  "integrationKeys.list": op({
+    input: z.object({}),
+    permission: "integrations.manage",
+    description: "List integration keys.",
+    mcp: false,
+    write: false,
+  }),
+  "integrationKeys.create": op({
+    input: z.object({
+      name: shortText.min(1),
+      source: z.string().trim().min(1).max(60),
+      hourlyLimit: z.number().int().min(1).max(1000).default(20),
+    }),
+    permission: "integrations.manage",
+    description: "Create an integration key for a server, such as the website, to send referrals. The key is shown once.",
+    mcp: false,
+    write: true,
+  }),
+  "integrationKeys.revoke": op({
+    input: z.object({ id }),
+    permission: "integrations.manage",
+    description: "Revoke an integration key. Referrals sent with it are refused from then on.",
+    mcp: false,
+    write: true,
   }),
 
   // Personal access tokens (MCP) and calendar
@@ -754,6 +889,7 @@ export interface ClientExport {
   outcomes: D.Outcome[];
   consents: D.ConsentRecord[];
   safeguarding: D.SafeguardingConcern[];
+  referrals: D.Referral[];
 }
 
 export interface Dashboard {
@@ -763,6 +899,8 @@ export interface Dashboard {
   notifications: D.Notification[];
   openSafeguarding?: number;
   retentionDue?: number;
+  /** Referrals with status new. Only for users with referrals.view. */
+  newReferrals?: number;
 }
 
 /** What each operation returns. */
@@ -833,6 +971,14 @@ export interface OpOutputs {
     byUser: { actorUid: string; actorName: string; count: number; firstAt: D.ISODate; lastAt: D.ISODate }[];
   };
   "retention.upcoming": D.RetentionCandidate[];
+  "referrals.list": Page<D.ReferralSummary>;
+  "referrals.get": { referral: D.Referral; possibleDuplicates: D.PossibleDuplicate[] };
+  "referrals.update": D.Referral;
+  "referrals.accept": { referral: D.Referral; clientId: string; createdClient: boolean };
+  "referrals.decline": D.Referral;
+  "integrationKeys.list": D.IntegrationKeySummary[];
+  "integrationKeys.create": { key: string; summary: D.IntegrationKeySummary };
+  "integrationKeys.revoke": { ok: true };
   "tokens.list": D.ApiTokenSummary[];
   "tokens.create": { token: string; summary: D.ApiTokenSummary };
   "tokens.revoke": { ok: true };

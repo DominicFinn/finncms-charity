@@ -9,6 +9,7 @@ The first deployment is for Nottingham & Derby Irish Elder Support (NDIE).
 - **Clients**: core details, next of kin and emergency contacts, and questionnaires that each charity builds for itself from reusable questions. Health and finance sets can be marked sensitive.
 - **Sessions, callbacks and notes**: appointments and calls, with in-person locations from a managed list. Scheduled follow-ups with reminders, ad hoc notes and file attachments.
 - **Outcomes and reports**: outcome measures from the client's and the staff view, split by town, postcode district, location, help category, session type, staff member or month. Reports export to CSV.
+- **Referrals**: a public form on the charity's website sends referrals here through a server to server key, with bot protection and rate limits. Staff triage them, then accept (creating or linking a client) or decline. See [docs/referrals.md](docs/referrals.md).
 - **Safeguarding**: concerns with severity, status, a lead and a full history. Clients with open concerns are flagged to people allowed to see them.
 - **Consent and GDPR**: consent records per purpose, restrictions when consent is withdrawn, subject access export and right to erasure.
 - **Retention**: a daily job anonymises clients after a configurable period of inactivity. It keeps what's needed for impact reporting and nothing that identifies the person.

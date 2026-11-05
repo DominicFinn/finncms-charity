@@ -11,6 +11,7 @@ import { getOrgSettings, permissionsFor } from "../core/context.js";
 import type { HandlerGroup } from "../core/dispatch.js";
 import { bucket, C, db, toIso } from "../core/firebase.js";
 import { anonymiseClient } from "./anonymise.js";
+import { purgeDecidedReferrals } from "./referrals.js";
 
 /** Clients with last activity before this are due. `aheadDays` looks into the future. */
 export function retentionCutoff(org: OrgSettings, aheadDays = 0, now = new Date()): Timestamp {
@@ -106,8 +107,10 @@ export async function runRetention(now = new Date()): Promise<{ anonymised: numb
     await f.ref.delete();
   }
 
+  const referralsAnonymised = await purgeDecidedReferrals(org.referralRetentionDays, now);
+
   if (anonymised >= MAX_PER_RUN) logger.warn(`Retention: stopped at ${MAX_PER_RUN} clients; the rest will follow tomorrow`);
-  logger.info("Retention run complete", { anonymised, held, warned: fresh.length });
+  logger.info("Retention run complete", { anonymised, held, warned: fresh.length, referralsAnonymised });
   return { anonymised, held, warned: fresh.length };
 }
 

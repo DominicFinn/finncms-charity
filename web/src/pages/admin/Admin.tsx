@@ -4,6 +4,7 @@ import { Alert } from "@/components/ui/alert";
 import { useAuth } from "@/hooks/auth";
 import type { PermissionRequirement } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
+import { IntegrationKeysAdmin } from "./IntegrationKeys";
 import { HelpCategoriesAdmin, SessionLocationsAdmin, SessionTypesAdmin } from "./ManagedLists";
 import { OrgSettingsAdmin } from "./OrgSettings";
 import { QuestionsAdmin } from "./Questions";
@@ -22,6 +23,7 @@ const SECTIONS: { id: string; label: string; need: PermissionRequirement; render
   { id: "session-locations", label: "Session locations", need: "config.manage", render: () => <SessionLocationsAdmin /> },
   { id: "settings", label: "Organisation settings", need: "config.manage", render: () => <OrgSettingsAdmin /> },
   { id: "retention", label: "Retention", need: "retention.manage", render: () => <RetentionAdmin /> },
+  { id: "integrations", label: "Integration keys", need: "integrations.manage", render: () => <IntegrationKeysAdmin /> },
 ];
 
 export function AdminPage() {

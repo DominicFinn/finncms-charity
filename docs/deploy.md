@@ -68,6 +68,10 @@ Open the app and sign in with the bootstrap email. You're now the super user. In
 4. Put the client id in `functions/.env.<project-id>`, set the secret as in step 2, and redeploy the functions.
 5. Turn on calendar sync in Admin > Organisation. Each person then connects their calendar from their Account page.
 
+## 6. Referrals from your website (optional)
+
+Create an integration key in Admin > Integration keys and give it to your website's server. [referrals.md](referrals.md) covers the website side and how the endpoint is protected.
+
 ## Backups
 
 Turn on scheduled Firestore backups (Firestore > Disaster recovery) and keep them for as short a time as your policy allows. A backup taken before a client was anonymised still holds that client's data until it expires. Note the backup retention period in your data protection records.

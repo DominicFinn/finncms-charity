@@ -1,4 +1,4 @@
-import { Bell, ShieldAlert, Timer } from "lucide-react";
+import { Bell, Inbox, ShieldAlert, Timer } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PageHeader } from "@/components/PageHeader";
 import { CallbackItem, SessionItem } from "@/components/records";
@@ -22,13 +22,21 @@ export function DashboardPage() {
       <QueryView query={dash}>
         {(d) => (
           <div className="flex flex-col gap-5">
-            {(!!d.openSafeguarding || !!d.retentionDue) && (
+            {(!!d.openSafeguarding || !!d.retentionDue || !!d.newReferrals) && (
               <div className="grid gap-3 sm:grid-cols-2">
                 {!!d.openSafeguarding && (
                   <Link to="/safeguarding" className="flex items-center gap-3 rounded-lg border border-destructive/40 bg-destructive/10 p-4">
                     <ShieldAlert className="size-6 text-destructive" aria-hidden />
                     <span>
                       <strong>{d.openSafeguarding}</strong> open safeguarding {d.openSafeguarding === 1 ? "concern" : "concerns"}
+                    </span>
+                  </Link>
+                )}
+                {!!d.newReferrals && (
+                  <Link to="/referrals" className="flex items-center gap-3 rounded-lg border border-primary/40 bg-primary/5 p-4">
+                    <Inbox className="size-6 text-primary" aria-hidden />
+                    <span>
+                      <strong>{d.newReferrals}</strong> new {d.newReferrals === 1 ? "referral" : "referrals"} waiting to be looked at
                     </span>
                   </Link>
                 )}

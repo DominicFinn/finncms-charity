@@ -46,6 +46,13 @@
         }
       },
       {
+        "source": "/api/referrals",
+        "function": {
+          "functionId": "referralsIntake",
+          "region": "europe-west2"
+        }
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }

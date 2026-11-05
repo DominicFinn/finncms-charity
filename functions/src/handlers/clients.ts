@@ -249,7 +249,7 @@ export const clientHandlers: HandlerGroup = {
     const { client } = await loadClient(input.id);
     ctx.touched.add(input.id);
     const byClient = (col: string) => db.collection(col).where("clientId", "==", input.id).get();
-    const [answers, sessions, callbacks, notes, files, outcomes, consents, safeguarding] = await Promise.all([
+    const [answers, sessions, callbacks, notes, files, outcomes, consents, safeguarding, referrals] = await Promise.all([
       byClient(C.answers),
       byClient(C.sessions),
       byClient(C.callbacks),
@@ -258,6 +258,7 @@ export const clientHandlers: HandlerGroup = {
       byClient(C.outcomes),
       byClient(C.consents),
       byClient(C.safeguarding),
+      byClient(C.referrals),
     ]);
     const fileRecords = await Promise.all(
       files.docs
@@ -283,6 +284,7 @@ export const clientHandlers: HandlerGroup = {
       outcomes: outcomes.docs.filter(visible).map((d) => docOut(d)),
       consents: consents.docs.map((d) => docOut(d)),
       safeguarding: ctx.can("safeguarding.view") ? safeguarding.docs.map((d) => docOut(d)) : [],
+      referrals: referrals.docs.map((d) => docOut(d)),
     };
   },
 

@@ -24,6 +24,9 @@ export const PERMISSIONS = {
   "safeguarding.manage": "Review, assign, escalate and close safeguarding concerns",
   "retention.manage": "View clients approaching the retention date",
   "mcp.use": "Create personal access tokens and use the MCP server",
+  "referrals.view": "See referrals sent in from the website and other sources",
+  "referrals.manage": "Triage referrals: assign, contact, accept as a client or decline",
+  "integrations.manage": "Create and revoke integration keys used by the website to send referrals",
 } as const;
 
 export type Permission = keyof typeof PERMISSIONS;
@@ -71,6 +74,8 @@ export const DEFAULT_ROLES: DefaultRole[] = [
       "safeguarding.raise",
       "safeguarding.view",
       "mcp.use",
+      "referrals.view",
+      "referrals.manage",
     ],
   },
   {

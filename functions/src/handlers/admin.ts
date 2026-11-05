@@ -184,6 +184,13 @@ export const adminHandlers: HandlerGroup = {
     if (input.retentionMonths !== undefined && input.retentionMonths < before.retentionMonths && !ctx.can("clients.anonymise")) {
       throw fail.denied("Shortening the retention period needs permission to anonymise clients.");
     }
+    if (
+      input.referralRetentionDays !== undefined &&
+      input.referralRetentionDays < before.referralRetentionDays &&
+      !ctx.can("clients.anonymise")
+    ) {
+      throw fail.denied("Shortening how long referrals are kept needs permission to anonymise clients.");
+    }
     const after: OrgSettings = { ...before, ...input };
     if (input.allowedDomains) after.allowedDomains = [...new Set(input.allowedDomains.filter(Boolean))];
     const batch = db.batch();

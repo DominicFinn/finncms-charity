@@ -48,6 +48,12 @@ export function OrgSettingsAdmin() {
               <Field label="Warn managers this many days before">
                 <Input type="number" min={1} max={365} required value={s.retentionWarningDays} onChange={num("retentionWarningDays")} />
               </Field>
+              <Field
+                label="Days to keep referral details after a decision"
+                hint="Once a referral is accepted or declined, its personal details are removed after this many days. Referrals still waiting are kept."
+              >
+                <Input type="number" min={7} max={3650} required value={s.referralRetentionDays} onChange={num("referralRetentionDays")} />
+              </Field>
             </div>
           </fieldset>
 

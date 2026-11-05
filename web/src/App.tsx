@@ -15,6 +15,8 @@ import { NoAccessPage, SignInPage } from "./pages/SignIn";
 import { ReportsPage } from "./pages/Reports";
 import { SafeguardingPage } from "./pages/Safeguarding";
 import { SessionsPage } from "./pages/Sessions";
+import { ReferralDetailPage } from "./pages/referrals/ReferralDetail";
+import { ReferralsPage } from "./pages/referrals/Referrals";
 
 export function App() {
   const { firebaseUser, me, meLoading, accessError } = useAuth();
@@ -39,6 +41,8 @@ export function App() {
         <Route path="clients/:id/:tab?" element={<RequirePermission need="clients.view"><ClientDetailPage /></RequirePermission>} />
         <Route path="callbacks" element={<RequirePermission need="clients.view"><CallbacksPage /></RequirePermission>} />
         <Route path="sessions" element={<RequirePermission need="clients.view"><SessionsPage /></RequirePermission>} />
+        <Route path="referrals" element={<RequirePermission need="referrals.view"><ReferralsPage /></RequirePermission>} />
+        <Route path="referrals/:id" element={<RequirePermission need="referrals.view"><ReferralDetailPage /></RequirePermission>} />
         <Route path="safeguarding" element={<RequirePermission need="safeguarding.view"><SafeguardingPage /></RequirePermission>} />
         <Route path="reports" element={<RequirePermission need="reports.view"><ReportsPage /></RequirePermission>} />
         <Route path="audit" element={<RequirePermission need="audit.view"><AuditLogPage /></RequirePermission>} />

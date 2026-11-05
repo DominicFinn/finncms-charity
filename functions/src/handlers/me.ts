@@ -20,7 +20,7 @@ export const meHandlers: HandlerGroup = {
     const now = Timestamp.now();
     const weekAhead = Timestamp.fromMillis(now.toMillis() + 7 * 86_400_000);
     const canSee = ctx.can("clients.view");
-    const [callbacks, sessions, notifications, safeguarding, retention] = await Promise.all([
+    const [callbacks, sessions, notifications, safeguarding, retention, referrals] = await Promise.all([
       canSee
         ? db.collection(C.callbacks).where("assigneeUid", "==", ctx.uid).where("status", "==", "open").orderBy("dueAt").limit(100).get()
         : null,
@@ -44,6 +44,7 @@ export const meHandlers: HandlerGroup = {
             .count()
             .get()
         : null,
+      ctx.can("referrals.view") ? db.collection(C.referrals).where("status", "==", "new").count().get() : null,
     ]);
 
     const cbs = callbacks?.docs.map((d) => docOut<Callback>(d)) ?? [];
@@ -57,6 +58,7 @@ export const meHandlers: HandlerGroup = {
       upcomingSessions: ses.map(named),
       notifications: notifications.docs.map((d) => docOut<Notification>(d)),
       openSafeguarding: safeguarding?.data().count,
+      newReferrals: referrals?.data().count,
       retentionDue: retention?.data().count,
     };
   },

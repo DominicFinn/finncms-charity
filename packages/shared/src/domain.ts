@@ -5,7 +5,8 @@
 import type { Permission } from "./permissions.js";
 
 export type ISODate = string;
-export type Channel = "ui" | "mcp" | "system";
+/** Where a call came from. "integration" is a server, such as the charity's website, using an integration key. */
+export type Channel = "ui" | "mcp" | "system" | "integration";
 
 export const CONTACT_METHODS = ["phone", "email", "post", "in_person", "text"] as const;
 export type ContactMethod = (typeof CONTACT_METHODS)[number];
@@ -321,6 +322,8 @@ export interface OrgSettings {
   /** Hours before a callback is due that a reminder is sent. */
   reminderLeadHours: number;
   calendarSyncEnabled: boolean;
+  /** Days after a referral is accepted or declined before its personal details are removed. */
+  referralRetentionDays: number;
 }
 
 export const DEFAULT_ORG_SETTINGS: OrgSettings = {
@@ -331,12 +334,13 @@ export const DEFAULT_ORG_SETTINGS: OrgSettings = {
   sessionTimeoutMinutes: 30,
   reminderLeadHours: 24,
   calendarSyncEnabled: false,
+  referralRetentionDays: 90,
 };
 
 export interface Notification {
   id: string;
   userUid: string;
-  kind: "callback_due" | "callback_overdue" | "safeguarding_assigned" | "retention_upcoming";
+  kind: "callback_due" | "callback_overdue" | "safeguarding_assigned" | "retention_upcoming" | "referral_assigned";
   message: string;
   link?: string;
   createdAt: ISODate;
@@ -349,6 +353,99 @@ export interface ApiTokenSummary {
   createdAt: ISODate;
   lastUsedAt?: ISODate;
   expiresAt: ISODate;
+  revokedAt?: ISODate;
+}
+
+// Referrals
+
+export const REFERRAL_STATUSES = ["new", "contacted", "accepted", "declined"] as const;
+export type ReferralStatus = (typeof REFERRAL_STATUSES)[number];
+
+export const REFERRER_TYPES = ["self", "family_or_friend", "professional"] as const;
+export type ReferrerType = (typeof REFERRER_TYPES)[number];
+
+/**
+ * A referral sent in from outside, usually the charity's website. It waits in
+ * a triage queue until someone accepts it (which creates or links a client)
+ * or declines it. Personal details are removed a set time after that decision.
+ */
+export interface Referral {
+  id: string;
+  /** Short reference shown to the person who referred, such as R-7K3Q9X. */
+  reference: string;
+  status: ReferralStatus;
+  /** Name of the integration key it came in on, such as "Website". */
+  source: string;
+  referrerType: ReferrerType;
+  referrerName?: string;
+  referrerRelationship?: string;
+  referrerOrganisation?: string;
+  referrerPhone?: string;
+  referrerEmail?: string;
+  firstName: string;
+  lastName: string;
+  addressLine?: string;
+  town?: string;
+  postcode?: string;
+  postcodeDistrict?: string;
+  phone?: string;
+  email?: string;
+  preferredContactMethod?: ContactMethod;
+  helpNeeded: string;
+  helpCategoryHints: string[];
+  /** Whether the person knows about this referral. Always true for self referrals. */
+  personAware: boolean;
+  consentToContact: boolean;
+  heardAbout?: string;
+  sourceUrl?: string;
+  assigneeUid?: string;
+  /** Staff notes made while triaging. */
+  notes?: string;
+  declineReason?: string;
+  clientId?: string;
+  createdAt: ISODate;
+  updatedAt: ISODate;
+  decidedAt?: ISODate;
+  decidedBy?: string;
+  /** Set when personal details were removed under the retention policy. */
+  anonymisedAt?: ISODate;
+}
+
+export interface ReferralSummary {
+  id: string;
+  reference: string;
+  status: ReferralStatus;
+  source: string;
+  referrerType: ReferrerType;
+  displayName: string;
+  town?: string;
+  postcodeDistrict?: string;
+  helpCategoryHints: string[];
+  assigneeUid?: string;
+  createdAt: ISODate;
+  anonymisedAt?: ISODate;
+}
+
+/** An existing client that might be the same person as a referral. */
+export interface PossibleDuplicate {
+  clientId: string;
+  displayName: string;
+  town?: string;
+  postcodeDistrict?: string;
+  /** What matched, for example "name and postcode". */
+  reason: string;
+}
+
+export interface IntegrationKeySummary {
+  id: string;
+  name: string;
+  /** Label stored on every referral sent with this key, such as "Website". */
+  source: string;
+  /** Most referrals accepted from this key in one hour. */
+  hourlyLimit: number;
+  createdAt: ISODate;
+  createdBy: string;
+  lastUsedAt?: ISODate;
   revokedAt?: ISODate;
 }
 

@@ -12,6 +12,8 @@ Every read and write follows the same path, whether it comes from the web app or
 
 Firestore and Storage security rules deny all access from browsers. Nothing can skip this path, which is why every read can be audited.
 
+There is one other way data comes in: the `referralsIntake` function, which the charity's website calls with an integration key to send a referral. It can only add a referral to the triage queue. It can't read anything, and it writes its own audit entry with the channel "integration". [referrals.md](referrals.md) describes it.
+
 ## The operation registry
 
 `packages/shared/src/ops.ts` lists every operation with its input schema, the permission it needs, a description, whether it changes data and whether it's offered over MCP. The web app's API client, the server dispatcher and the MCP tool list are all driven from it, so adding an operation means:
@@ -78,7 +80,7 @@ Reports read sessions, callbacks and outcomes and aggregate them in the function
 
 | Function | Schedule | Purpose |
 | --- | --- | --- |
-| `retentionDaily` | 02:30 every day | Anonymise clients past the retention period, warn managers about upcoming ones, remove abandoned uploads |
+| `retentionDaily` | 02:30 every day | Anonymise clients past the retention period, warn managers about upcoming ones, remove personal details from referrals decided more than the referral retention period ago, remove abandoned uploads |
 | `callbackReminders` | every 15 minutes | In-app notifications when a callback is coming up and when it's overdue |
 
 ## Calendar sync

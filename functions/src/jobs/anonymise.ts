@@ -11,6 +11,8 @@
  * categories, session and callback counts, types, statuses and managed
  * locations, dates at month level, and postcode district.
  *
+ * Referrals linked to the client lose their personal details too.
+ *
  * The client's data key is deleted, which makes the before and after values
  * in earlier audit entries unreadable. The audit entries themselves stay.
  */
@@ -20,6 +22,7 @@ import { auditNow, type Actor } from "../core/audit.js";
 import { shredClientKey } from "../core/crypto.js";
 import { fail } from "../core/errors.js";
 import { bucket, C, db } from "../core/firebase.js";
+import { anonymiseReferralsForClient } from "./referrals.js";
 
 export type AnonymiseBasis = "erasure_request" | "no_longer_needed" | "retention_period";
 
@@ -157,6 +160,7 @@ export async function anonymiseClient(clientId: string, actor: Actor & { channel
 
   await writer.close();
   if (errors.length) throw new Error(`Anonymisation of ${clientId} incomplete: ${errors.length} writes failed`);
+  await anonymiseReferralsForClient(clientId, actor);
   await shredClientKey(clientId);
   await clientRef.set({
     status: "anonymised",

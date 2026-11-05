@@ -3,6 +3,7 @@ import {
   CalendarDays,
   ClipboardList,
   Home,
+  Inbox,
   LogOut,
   Menu,
   PhoneCall,
@@ -14,6 +15,7 @@ import {
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { NavLink, Outlet } from "react-router-dom";
+import { useOp } from "@/hooks/api";
 import { useAuth, useMe } from "@/hooks/auth";
 import { useIdleTimeout } from "@/hooks/useIdleTimeout";
 import type { PermissionRequirement } from "@/lib/permissions";
@@ -29,10 +31,12 @@ interface NavItem {
   need?: PermissionRequirement;
   /** Shown in the bottom bar on phones. */
   primary?: boolean;
+  /** Small count shown next to the label. */
+  count?: number;
 }
 
 const ADMIN_NEED: PermissionRequirement = {
-  any: ["users.manage", "questionnaires.manage", "config.manage", "retention.manage"],
+  any: ["users.manage", "questionnaires.manage", "config.manage", "retention.manage", "integrations.manage"],
 };
 
 const NAV: NavItem[] = [
@@ -40,6 +44,7 @@ const NAV: NavItem[] = [
   { to: "/clients", label: "Clients", icon: <Users />, need: "clients.view", primary: true },
   { to: "/callbacks", label: "Callbacks", icon: <PhoneCall />, need: "clients.view", primary: true },
   { to: "/sessions", label: "Sessions", icon: <CalendarDays />, need: "clients.view", primary: true },
+  { to: "/referrals", label: "Referrals", icon: <Inbox />, need: "referrals.view" },
   { to: "/safeguarding", label: "Safeguarding", icon: <ShieldAlert />, need: "safeguarding.view" },
   { to: "/reports", label: "Reports", icon: <BarChart3 />, need: "reports.view" },
   { to: "/audit", label: "Audit log", icon: <ScrollText />, need: "audit.view" },
@@ -64,6 +69,11 @@ function NavEntry({ item, onClick, compact }: { item: NavItem; onClick?: () => v
     >
       {item.icon}
       <span>{item.label}</span>
+      {!!item.count && (
+        <span className="ml-auto rounded-full bg-primary px-2 text-xs font-semibold text-primary-foreground" aria-label={`${item.count} new`}>
+          {item.count}
+        </span>
+      )}
     </NavLink>
   );
 }
@@ -73,7 +83,9 @@ export function Layout() {
   const me = useMe();
   const [menuOpen, setMenuOpen] = useState(false);
   const { warning, stayActive } = useIdleTimeout(me.org.sessionTimeoutMinutes, () => void signOut());
-  const items = NAV.filter((i) => can(i.need));
+  // The dashboard already counts new referrals; reuse it rather than polling another call.
+  const dash = useOp("dashboard.get", {}, { enabled: can("referrals.view"), staleTime: 5 * 60_000 });
+  const items = NAV.filter((i) => can(i.need)).map((i) => (i.to === "/referrals" ? { ...i, count: dash.data?.newReferrals } : i));
   const primary = items.filter((i) => i.primary);
 
   return (

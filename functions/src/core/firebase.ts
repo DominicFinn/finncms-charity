@@ -38,6 +38,9 @@ export const C = {
   apiTokens: "apiTokens",
   calendarTokens: "calendarTokens",
   oauthStates: "oauthStates",
+  referrals: "referrals",
+  integrationKeys: "integrationKeys",
+  integrationUsage: "integrationUsage",
 } as const;
 
 export { Timestamp };
@@ -78,7 +81,7 @@ export function docOut<T>(snap: DocumentSnapshot, omit: string[] = []): T {
 }
 
 /** Fields kept on documents for queries and housekeeping, never returned. */
-const SERVER_ONLY_FIELDS = ["searchTokens", "sortName", "dims", "calendarSync", "reminderSentAt", "overdueNotifiedAt", "retentionWarnedAt", "anonymised", "flagged"];
+const SERVER_ONLY_FIELDS = ["searchTokens", "sortName", "dims", "calendarSync", "reminderSentAt", "overdueNotifiedAt", "retentionWarnedAt", "anonymised", "flagged", "pendingPurge", "keyId", "submissionId"];
 
 export function newId(collection: string): string {
   return db.collection(collection).doc().id;

@@ -22,7 +22,8 @@ export const themes: Record<string, Theme> = {
   ...(siteTheme ? { site: siteTheme } : {}),
 };
 
-export function selectTheme(id: string | undefined, site: Theme | undefined = siteTheme): Theme {
+/** `site` is the site theme, or null for none. Left out, it uses the site folder's theme if there is one. */
+export function selectTheme(id: string | undefined, site: Theme | null = siteTheme ?? null): Theme {
   if (site) return site;
   if (id && themes[id]) return themes[id];
   return defaultTheme;

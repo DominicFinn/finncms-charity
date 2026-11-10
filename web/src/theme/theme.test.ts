@@ -10,10 +10,10 @@ describe("theme", () => {
   });
 
   it("chooses a built in theme by name when there's no site theme", () => {
-    expect(selectTheme(undefined, undefined)).toBe(defaultTheme);
-    expect(selectTheme("nope", undefined)).toBe(defaultTheme);
-    expect(selectTheme("ndie", undefined)).toBe(ndieTheme);
-    expect(selectTheme("default", undefined)).toBe(defaultTheme);
+    expect(selectTheme(undefined, null)).toBe(defaultTheme);
+    expect(selectTheme("nope", null)).toBe(defaultTheme);
+    expect(selectTheme("ndie", null)).toBe(ndieTheme);
+    expect(selectTheme("default", null)).toBe(defaultTheme);
   });
 
   it("always uses the site theme when there is one", () => {

@@ -32,6 +32,9 @@ jobs:
         run: npm audit --omit=dev --audit-level=high
 
   codeql:
+    # Code scanning on a private repository needs GitHub Advanced Security,
+    # so private copies of this repository skip it.
+    if: ${{ !github.event.repository.private }}
     runs-on: ubuntu-latest
     permissions:
       security-events: write

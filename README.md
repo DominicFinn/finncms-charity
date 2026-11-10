@@ -4,6 +4,17 @@ An open source client and case management system for small charities. It records
 
 The first deployment is for Nottingham & Derby Irish Elder Support (NDIE).
 
+## Screenshots
+
+These show the default theme with made-up demo data. A charity can change the name, colours, fonts and logo.
+
+| | |
+| --- | --- |
+| ![Home page with callbacks, upcoming sessions and alerts](docs/screenshots/dashboard.jpg) **Home**: each person's callbacks and sessions, with alerts for safeguarding, new referrals and overdue actions. | ![Client list with search and filters](docs/screenshots/clients.jpg) **Clients**: search by name or postcode, filter by status and type of help. |
+| ![A client record with a safeguarding alert](docs/screenshots/client.jpg) **Client record**: details, questionnaires, sessions, callbacks, notes, outcomes, consent, safeguarding and who has looked at the record. | ![Referrals waiting to be triaged](docs/screenshots/referrals.jpg) **Referrals**: referrals from the website wait here until someone accepts or declines them. |
+| ![A trust meeting register showing quorum](docs/screenshots/meeting-register.jpg) **Trust meetings**: agenda and minutes, the register with a quorum check, actions and papers. | ![Demand report by help category](docs/screenshots/reports.jpg) **Reports**: demand, outcomes and activity, split by place, type of help, session type, staff member or month. |
+| ![Website analytics with daily visits](docs/screenshots/website-analytics.jpg) **Website analytics**: visits, pages, sources and campaigns, with no personal data kept. | |
+
 ## What it does
 
 - **Clients**: core details, next of kin and emergency contacts, and questionnaires that each charity builds for itself from reusable questions. Health and finance sets can be marked sensitive.

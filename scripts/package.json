@@ -4,12 +4,19 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "seed": "tsx seed.ts"
+    "seed": "tsx seed.ts",
+    "setup": "tsx setup.ts",
+    "deploy": "tsx deploy.ts",
+    "doctor": "tsx doctor.ts",
+    "site:init": "tsx site-init.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "firebase-admin": "^14.5.0"
   },
   "devDependencies": {
-    "tsx": "^4.20.0"
+    "tsx": "^4.20.0",
+    "vitest": "^5.1.0"
   }
 }

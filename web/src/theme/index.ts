@@ -3,13 +3,15 @@ import { ndieTheme } from "./ndie";
 import type { Theme, ThemeColours } from "./types";
 
 export type { Theme, ThemeColours } from "./types";
+export { makeTheme, type BrandColours, type MakeThemeOptions } from "./make";
 
 /**
  * A deployment can supply its own theme in site/theme.ts at the repository
- * root, with its logo and fonts beside it. When that file exists it's used
- * unless VITE_THEME names another theme. The core never contains a site/
- * folder, so a copy of the code for one charity can pull updates without
- * conflicts.
+ * root, with its logo and fonts beside it. When that file exists it's always
+ * used, whatever VITE_THEME says, so a charity never has to set anything else.
+ * VITE_THEME only chooses between the built in themes when there's no site
+ * folder. The core never contains a site/ folder, so a copy of the code for
+ * one charity can pull updates without conflicts.
  */
 const siteModules = import.meta.glob<{ default: Theme }>("../../../site/theme.ts", { eager: true });
 export const siteTheme: Theme | undefined = Object.values(siteModules)[0]?.default;
@@ -20,9 +22,10 @@ export const themes: Record<string, Theme> = {
   ...(siteTheme ? { site: siteTheme } : {}),
 };
 
-export function selectTheme(id: string | undefined): Theme {
+export function selectTheme(id: string | undefined, site: Theme | undefined = siteTheme): Theme {
+  if (site) return site;
   if (id && themes[id]) return themes[id];
-  return siteTheme ?? defaultTheme;
+  return defaultTheme;
 }
 
 /** camelCase token name to CSS custom property, e.g. primaryForeground to --primary-foreground. */

@@ -4,5 +4,5 @@
     "types": ["node"],
     "paths": { "@ccm/shared": ["../packages/shared/src/index.ts"] }
   },
-  "include": ["*.ts"]
+  "include": ["*.ts", "lib/*.ts"]
 }

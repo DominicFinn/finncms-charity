@@ -86,6 +86,9 @@
           }
         ]
       }
+    ],
+    "predeploy": [
+      "npm run build -w web"
     ]
   },
   "emulators": {

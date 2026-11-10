@@ -29,7 +29,7 @@ These show the default theme with made-up demo data. A charity can change the na
 - **Claude**: a built in MCP server lets staff use Claude with the system, with exactly their own permissions and the same auditing.
 - **Google Calendar**: sessions and callbacks can appear in each person's own calendar.
 - **Website analytics**: page views, visits, new and returning visitors, top pages, sources and UTM campaigns from the charity's website, with no IP addresses stored. See [docs/analytics.md](docs/analytics.md).
-- **Theming**: one theme file sets colours, fonts, radius and logo. NDIE has an Irish theme and the default is neutral.
+- **Theming**: one short file sets your name, colours, fonts, corners and logo, and a check tells you if any text would be hard to read. The default is neutral.
 
 It works on a phone. Staff can sign in and do everything from a mobile.
 
@@ -48,9 +48,27 @@ docs              Architecture, deployment and MCP guides
 
 The key design decision is that browsers never read or write Firestore or Storage directly. The security rules deny everything, and all access goes through one server side dispatcher that checks permissions and writes the audit log. That's what makes "every read is audited" enforceable rather than a convention. [docs/architecture.md](docs/architecture.md) explains it in more detail.
 
+## Putting it live
+
+The easiest way needs nothing installed. Click the button, sign in with your charity's Google account and follow the steps:
+
+[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://shell.cloud.google.com/cloudshell/open?cloudshell_git_repo=https://github.com/DominicFinn/finncms-charity&cloudshell_tutorial=docs/cloudshell-tutorial.md)
+
+Or, on your own computer with Node 24, git and the Google Cloud CLI:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/DominicFinn/finncms-charity/main/install.sh | bash
+```
+
+Either way you answer three questions: a Firebase project id, your charity's name and the first administrator's email. Setup creates the project if needed, deploys everything and lists the few steps Google only allows in the console. [docs/deploy.md](docs/deploy.md) covers it in full, including updating and troubleshooting.
+
+## Making it your own
+
+Your name, colours, fonts, logo and starting lists all go in one `site/` folder, so updates to the shared code never touch them. Start with `npm run site:init -- --name "Your Charity"` and follow [docs/customise.md](docs/customise.md). No coding needed.
+
 ## Running it locally
 
-You need Node 24 or later, Java 21 or later (for the Firebase emulators) and the Firebase CLI (`npm install -g firebase-tools`).
+You need Node 24 or later and Java 21 or later (for the Firebase emulators). The Firebase CLI comes with the project.
 
 ```sh
 npm install
@@ -74,17 +92,9 @@ npm run test:emulator -w functions   # integration tests against the Firestore a
 
 The integration tests cover sign in and invitations, permission checks, read auditing, sealed audit values, search and paging, sensitive questionnaires, consent restrictions, safeguarding, anonymisation, the retention job, reminders, reports, access tokens, the MCP server and the security rules.
 
-## Deploying
-
-See [docs/deploy.md](docs/deploy.md). In short: create a Firebase project in a UK or EU region, set the environment variables, deploy, and run the seed script against the project.
-
 ## Using Claude
 
 See [docs/mcp.md](docs/mcp.md). Each person creates a personal access token on their Account page and adds the server to Claude. Claude then works as that person, sees only what they can see, and everything it does appears in the audit log.
-
-## Adapting it for your charity
-
-Run your own copy with your theme, logo and starting configuration in a `site/` folder, so updates to the shared code merge cleanly. [docs/own-deployment.md](docs/own-deployment.md) explains how.
 
 ## Open questions
 

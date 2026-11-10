@@ -14,12 +14,18 @@
     "test": "npm run test --workspaces --if-present",
     "emulators": "firebase emulators:start --import=.emulator-data --export-on-exit",
     "dev": "npm run dev -w web",
-    "seed": "npm run seed -w scripts --"
+    "seed": "npm run seed -w scripts --",
+    "setup": "npm run setup -w scripts --",
+    "deploy": "npm run deploy -w scripts --",
+    "doctor": "npm run doctor -w scripts --",
+    "site:init": "npm run site:init -w scripts --",
+    "site:check": "npm run test -w web -- src/theme/site-check.test.ts"
   },
   "engines": {
     "node": ">=24"
   },
   "devDependencies": {
+    "firebase-tools": "^15.35.0",
     "typescript": "~5.9.3"
   },
   "overrides": {

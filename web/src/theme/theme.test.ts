@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { defaultTheme } from "./default";
-import { selectTheme, siteTheme, themeCss, tokenToVar } from "./index";
+import { makeTheme, selectTheme, siteTheme, themeCss, tokenToVar } from "./index";
 import { ndieTheme } from "./ndie";
 
 describe("theme", () => {
@@ -9,12 +9,19 @@ describe("theme", () => {
     expect(tokenToVar("background")).toBe("--background");
   });
 
-  it("falls back to the site theme when there is one, otherwise the default", () => {
-    const fallback = siteTheme ?? defaultTheme;
-    expect(selectTheme(undefined)).toBe(fallback);
-    expect(selectTheme("nope")).toBe(fallback);
-    expect(selectTheme("ndie")).toBe(ndieTheme);
-    expect(selectTheme("default")).toBe(defaultTheme);
+  it("chooses a built in theme by name when there's no site theme", () => {
+    expect(selectTheme(undefined, undefined)).toBe(defaultTheme);
+    expect(selectTheme("nope", undefined)).toBe(defaultTheme);
+    expect(selectTheme("ndie", undefined)).toBe(ndieTheme);
+    expect(selectTheme("default", undefined)).toBe(defaultTheme);
+  });
+
+  it("always uses the site theme when there is one", () => {
+    const site = makeTheme({ appName: "Site", logo: "/logo.svg", colours: { primary: "#123456", primaryText: "#ffffff" } });
+    expect(selectTheme(undefined, site)).toBe(site);
+    expect(selectTheme("default", site)).toBe(site);
+    expect(selectTheme("ndie", site)).toBe(site);
+    expect(selectTheme("default")).toBe(siteTheme ?? defaultTheme);
   });
 
   it("writes light and dark variables", () => {

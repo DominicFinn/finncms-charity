@@ -1,7 +1,7 @@
 {
-  "$comment": "Nottingham & Derby Irish Elder Support. The retention period and the final lists of questions, categories and outcome measures are still to be confirmed with NDIE.",
+  "$comment": "A fuller example for a charity supporting older people: help categories, session locations, questionnaires for mobility, health, finance and social contact, and a standard outcome measure. Copy it to site/seed.json and change it to suit.",
   "org": {
-    "name": "Nottingham & Derby Irish Elder Support",
+    "name": "Example Charity",
     "retentionMonths": 36,
     "retentionWarningDays": 60,
     "allowedDomains": [],
@@ -10,11 +10,7 @@
     "calendarSyncEnabled": false,
     "quorumMinimum": 3,
     "quorumFraction": 0,
-    "analyticsAllowedOrigins": [
-      "https://nottsderbyirish.org.uk",
-      "https://www.nottsderbyirish.org.uk",
-      "https://finnlytics-charity.web.app"
-    ]
+    "analyticsAllowedOrigins": []
   },
   "helpCategories": [
     {

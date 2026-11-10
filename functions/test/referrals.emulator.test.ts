@@ -46,7 +46,7 @@ function post(key: string | null, body: unknown, extra: Partial<IntakeRequest> =
 
 async function newKey(hourlyLimit = 20) {
   const admin = await userWith([SUPER_USER_ROLE_ID], "Admin");
-  const { key, summary } = await call(admin, "integrationKeys.create", { name: "NDIE website", source: "Website", hourlyLimit });
+  const { key, summary } = await call(admin, "integrationKeys.create", { name: "Charity website", source: "Website", hourlyLimit });
   return { admin, key, summary };
 }
 
@@ -256,7 +256,7 @@ describe("referral triage", () => {
     const list = await call(admin, "integrationKeys.list", {});
     expect(list).toHaveLength(1);
     expect(JSON.stringify(list)).not.toContain("ccmk_");
-    expect(list[0]).toMatchObject({ name: "NDIE website", source: "Website", hourlyLimit: 20 });
+    expect(list[0]).toMatchObject({ name: "Charity website", source: "Website", hourlyLimit: 20 });
     const manager = await userWith(["manager"]);
     expect(manager.can("integrations.manage")).toBe(true);
     await call(manager, "integrationKeys.revoke", { id: summary.id });

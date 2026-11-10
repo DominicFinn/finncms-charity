@@ -41,8 +41,8 @@ describe("sign in and access", () => {
   });
 
   it("lets users from an allowed domain in with no roles", async () => {
-    await db.collection(C.config).doc("org").set({ allowedDomains: ["ndie.org.uk"] });
-    const u = await resolveCaller({ uid: "d1", email: "staff@ndie.org.uk", provider: "google.com" }, "ui");
+    await db.collection(C.config).doc("org").set({ allowedDomains: ["example.org"] });
+    const u = await resolveCaller({ uid: "d1", email: "staff@example.org", provider: "google.com" }, "ui");
     expect(u.permissions.size).toBe(0);
   });
 
@@ -441,8 +441,8 @@ describe("session locations", () => {
     await expectCode(call(cw, "sessions.create", { ...base, startsAt: "2026-03-01T10:00:00Z", locationId: "nowhere" }), "invalid-argument");
 
     await call(cw, "sessions.create", { ...base, startsAt: "2026-03-01T10:00:00Z", locationId: "hospital" });
-    const s2 = await call(cw, "sessions.create", { ...base, startsAt: "2026-03-02T10:00:00Z", locationId: "other", locationOther: "Irish Centre " });
-    await call(cw, "sessions.create", { ...base, startsAt: "2026-03-03T10:00:00Z", locationId: "other", locationOther: "irish centre" });
+    const s2 = await call(cw, "sessions.create", { ...base, startsAt: "2026-03-02T10:00:00Z", locationId: "other", locationOther: "Riverside Hall " });
+    await call(cw, "sessions.create", { ...base, startsAt: "2026-03-03T10:00:00Z", locationId: "other", locationOther: "riverside hall" });
     await call(cw, "sessions.create", { ...base, startsAt: "2026-03-04T10:00:00Z", locationId: "other", locationOther: "Library" });
     // Free text is ignored when a managed location is chosen, and dropped for sessions not in person.
     const s5 = await call(cw, "sessions.create", { ...base, startsAt: "2026-03-05T10:00:00Z", locationId: "hospital", locationOther: "ignored" });
@@ -452,15 +452,15 @@ describe("session locations", () => {
 
     const byLocation = await call(manager, "reports.demand", { filters: {}, dimension: "location" });
     expect(Object.fromEntries(byLocation.rows.map((r) => [r.label, r.values.sessions]))).toEqual({ Hospital: 2, Other: 3, Unknown: 1 });
-    expect(JSON.stringify(byLocation)).not.toContain("Irish");
+    expect(JSON.stringify(byLocation)).not.toContain("Riverside");
 
     expect(await call(manager, "sessionLocations.otherValues", {})).toEqual([
-      { text: "irish centre", sessions: 2, lastUsedAt: "2026-03-03T10:00:00.000Z" },
+      { text: "riverside hall", sessions: 2, lastUsedAt: "2026-03-03T10:00:00.000Z" },
       { text: "Library", sessions: 1, lastUsedAt: "2026-03-04T10:00:00.000Z" },
     ]);
 
-    const centre = await call(manager, "sessionLocations.upsert", { name: "Irish Centre", isOther: false, archived: false });
-    expect(await call(manager, "sessionLocations.promoteOther", { texts: ["irish centre"], locationId: centre.id })).toEqual({ moved: 2 });
+    const centre = await call(manager, "sessionLocations.upsert", { name: "Riverside Hall", isOther: false, archived: false });
+    expect(await call(manager, "sessionLocations.promoteOther", { texts: ["riverside hall"], locationId: centre.id })).toEqual({ moved: 2 });
     await expectCode(call(manager, "sessionLocations.promoteOther", { texts: ["Library"], locationId: "other" }), "invalid-argument");
 
     const [moved] = (await call(cw, "sessions.list", { clientId: c.id, limit: 20 })).filter((s) => s.id === s2.id);
@@ -468,7 +468,7 @@ describe("session locations", () => {
     expect(moved.locationOther).toBeUndefined();
     expect((await call(manager, "sessionLocations.otherValues", {})).map((o) => o.text)).toEqual(["Library"]);
     const after = await call(manager, "reports.demand", { filters: { locationId: centre.id }, dimension: "location" });
-    expect(after.rows).toEqual([{ key: centre.id, label: "Irish Centre", values: { sessions: 2, hours: 2, clients: 1 } }]);
+    expect(after.rows).toEqual([{ key: centre.id, label: "Riverside Hall", values: { sessions: 2, hours: 2, clients: 1 } }]);
 
     // Editing a session to a non Other location clears its description.
     const lib = (await call(cw, "sessions.list", { clientId: c.id, limit: 20 })).find((s) => s.locationOther === "Library")!;

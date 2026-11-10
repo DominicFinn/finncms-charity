@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { contrastProblems, contrastRatio, parseHex } from "./contrast";
 import { defaultTheme } from "./default";
 import { makeTheme } from "./make";
-import { ndieTheme } from "./ndie";
+import { greenTheme } from "./green";
 
 describe("makeTheme", () => {
   it("fills every token from a few brand colours", () => {
@@ -56,7 +56,7 @@ describe("contrast", () => {
 
   it("passes the built in themes", () => {
     expect(contrastProblems(defaultTheme)).toEqual([]);
-    expect(contrastProblems(ndieTheme)).toEqual([]);
+    expect(contrastProblems(greenTheme)).toEqual([]);
   });
 
   it("flags hard to read text", () => {

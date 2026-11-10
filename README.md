@@ -2,8 +2,6 @@
 
 An open source client and case management system for small charities. It records the people a charity helps, the help given and the outcomes achieved, and reports on impact by place and type of help. It's built to be secure, fully audited and cheap to run on Firebase.
 
-The first deployment is for Nottingham & Derby Irish Elder Support (NDIE).
-
 ## Screenshots
 
 These show the default theme with made-up demo data. A charity can change the name, colours, fonts and logo.
@@ -41,7 +39,7 @@ TypeScript throughout. React with shadcn/ui style components on the front end, a
 packages/shared   The API contract: operations, input schemas, types and permissions
 functions         Cloud Functions: the api callable, MCP server, scheduled jobs, calendar sync
 web               The React app
-config/seed       Starting configuration (default and NDIE)
+config/seed       Starting configuration (a minimal default and a fuller example)
 scripts           Seed script
 docs              Architecture, deployment and MCP guides
 ```
@@ -77,7 +75,7 @@ printf 'BOOTSTRAP_SUPERUSER_EMAIL=you@example.org\nAPP_URL=http://localhost:5173
 printf 'GOOGLE_OAUTH_CLIENT_SECRET=unused\n' > functions/.secret.local
 npm run build -w functions
 npx firebase emulators:start --project demo-ccm   # in one terminal
-npm run seed -- --config ndie                      # in another, once the emulators are up
+npm run seed -- --config example                    # in another, once the emulators are up
 npm run dev                                        # the web app on http://localhost:5173
 ```
 
@@ -96,11 +94,13 @@ The integration tests cover sign in and invitations, permission checks, read aud
 
 See [docs/mcp.md](docs/mcp.md). Each person creates a personal access token on their Account page and adds the server to Claude. Claude then works as that person, sees only what they can see, and everything it does appears in the audit log.
 
-## Open questions
+## Licence
 
-- NDIE's retention period needs confirming with its data protection lead. The default is 3 years after a client's last activity. UK GDPR doesn't set a figure, so each charity has to decide its own.
-- The final NDIE questionnaires, help categories and outcome measures. The seed file has a first version based on the spec.
-- The licence. A permissive licence such as MIT or Apache 2.0 is planned. Until one is added the code is not licensed for reuse.
+A permissive licence such as MIT or Apache 2.0 is planned. Until one is added, the code is not licensed for reuse.
+
+## Retention
+
+The system anonymises clients after a period of inactivity, 3 years by default. UK GDPR doesn't set a figure, so each charity should agree its own with whoever leads on data protection, and set it in Admin, Organisation settings.
 
 ## Contributing
 

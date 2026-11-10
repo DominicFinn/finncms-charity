@@ -70,7 +70,7 @@ describe("cleanUtm", () => {
 
 describe("referrerDomain", () => {
   it("returns the referring domain without www", () => {
-    expect(referrerDomain("https://www.google.com/search?q=irish+elders", "www.example.org")).toBe("google.com");
+    expect(referrerDomain("https://www.google.com/search?q=charity+support", "www.example.org")).toBe("google.com");
   });
 
   it("ignores internal links, empty and non-web referrers", () => {

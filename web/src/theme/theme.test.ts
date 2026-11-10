@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { defaultTheme } from "./default";
 import { makeTheme, selectTheme, siteTheme, themeCss, tokenToVar } from "./index";
-import { ndieTheme } from "./ndie";
+import { greenTheme } from "./green";
 
 describe("theme", () => {
   it("maps token names to CSS variables", () => {
@@ -12,7 +12,7 @@ describe("theme", () => {
   it("chooses a built in theme by name when there's no site theme", () => {
     expect(selectTheme(undefined, null)).toBe(defaultTheme);
     expect(selectTheme("nope", null)).toBe(defaultTheme);
-    expect(selectTheme("ndie", null)).toBe(ndieTheme);
+    expect(selectTheme("green", null)).toBe(greenTheme);
     expect(selectTheme("default", null)).toBe(defaultTheme);
   });
 
@@ -20,12 +20,12 @@ describe("theme", () => {
     const site = makeTheme({ appName: "Site", logo: "/logo.svg", colours: { primary: "#123456", primaryText: "#ffffff" } });
     expect(selectTheme(undefined, site)).toBe(site);
     expect(selectTheme("default", site)).toBe(site);
-    expect(selectTheme("ndie", site)).toBe(site);
+    expect(selectTheme("green", site)).toBe(site);
     expect(selectTheme("default")).toBe(siteTheme ?? defaultTheme);
   });
 
   it("writes light and dark variables", () => {
-    const css = themeCss(ndieTheme);
+    const css = themeCss(greenTheme);
     expect(css).toContain("--primary: #0b5d3b;");
     expect(css).toContain("prefers-color-scheme: dark");
     expect(css).toContain("font-size: 18px;");
@@ -33,7 +33,7 @@ describe("theme", () => {
   });
 
   it("defines every token in both modes for each theme", () => {
-    for (const t of [defaultTheme, ndieTheme]) {
+    for (const t of [defaultTheme, greenTheme]) {
       expect(Object.keys(t.colours.dark).sort()).toEqual(Object.keys(t.colours.light).sort());
     }
   });

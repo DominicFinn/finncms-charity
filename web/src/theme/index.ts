@@ -1,5 +1,5 @@
 import { defaultTheme } from "./default";
-import { ndieTheme } from "./ndie";
+import { greenTheme } from "./green";
 import type { Theme, ThemeColours } from "./types";
 
 export type { Theme, ThemeColours } from "./types";
@@ -18,7 +18,7 @@ export const siteTheme: Theme | undefined = Object.values(siteModules)[0]?.defau
 
 export const themes: Record<string, Theme> = {
   default: defaultTheme,
-  ndie: ndieTheme,
+  green: greenTheme,
   ...(siteTheme ? { site: siteTheme } : {}),
 };
 

@@ -7,7 +7,7 @@ import { initials, placeholderLogo, seedWithName, themeTemplate } from "./site.j
 
 describe("site templates", () => {
   it("makes initials from a charity name", () => {
-    expect(initials("Nottingham & Derby Irish Elder Support")).toBe("ND");
+    expect(initials("Riverside & District Community Trust")).toBe("RD");
     expect(initials("The Friends of the Park")).toBe("FP");
     expect(initials("")).toBe("C");
   });

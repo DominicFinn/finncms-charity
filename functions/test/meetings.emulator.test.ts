@@ -71,7 +71,7 @@ describe("meetings", () => {
       title: "Board meeting",
       type: "board",
       startsAt: at(-7),
-      location: "Irish Centre",
+      location: "Community centre",
       agenda: [{ title: "Apologies" }, { title: "Finance report", presenter: "Patrick Kelly" }],
     });
     expect(m.status).toBe("draft");

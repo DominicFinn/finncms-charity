@@ -1,7 +1,7 @@
 import { referralSubmissionSchema } from "@ccm/shared";
 import { describe, expect, it } from "vitest";
 
-// The exact shape the NDIE website's /api/referral route forwards, with the
+// The exact shape the example website's /api/referral route forwards, with the
 // empty strings a browser sends for fields left blank.
 const FROM_WEBSITE = {
   referrerType: "self",

@@ -44,7 +44,7 @@ describe("collect", () => {
       event({
         v,
         u: `${ORIGIN}/events/?email=someone%40example.com&utm_source=Facebook&utm_medium=social&utm_campaign=ceili`,
-        r: "https://www.google.com/search?q=irish",
+        r: "https://www.google.com/search?q=charity",
         ti: "Events",
       }),
     );

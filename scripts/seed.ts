@@ -1,8 +1,8 @@
 /**
  * Loads roles and a seed configuration into Firestore.
  *
- *   npm run seed -- --config ndie                      # against the emulator
- *   npm run seed -- --config ndie --project my-proj    # against a real project
+ *   npm run seed -- --config example                   # against the emulator
+ *   npm run seed -- --config example --project my-proj # against a real project
  *
  * Existing documents are left alone, so it's safe to run again after an
  * administrator has changed things in the app. Pass --overwrite to replace

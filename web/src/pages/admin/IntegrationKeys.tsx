@@ -114,7 +114,7 @@ function CreateKeyDialog() {
               create.mutate({ name, source, hourlyLimit: limit }, { onSuccess: (r) => setKey(r.key) });
             }}
           >
-            <Field label="Name" hint="For your reference, for example 'NDIE website'.">
+            <Field label="Name" hint="For your reference, for example 'Charity website'.">
               <Input required maxLength={200} value={name} onChange={(e) => setName(e.target.value)} />
             </Field>
             <Field label="Source label" hint="Shown on every referral sent with this key.">

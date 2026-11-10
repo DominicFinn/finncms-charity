@@ -10,7 +10,7 @@ export interface SetupAnswers {
   superUserEmail: string;
   /** A custom domain such as contacts.example.org, without https://. */
   customDomain?: string;
-  /** default, ndie, or a path to a seed file. */
+  /** default, example, or a path to a seed file. */
   seed: string;
 }
 

@@ -24,9 +24,9 @@ The browser never talks to this system and never sees the key. The website's own
 ## Setting it up
 
 0. On a system set up before referrals existed, the roles already saved don't have the new permissions, because seeding never changes existing records. The super user always has every permission. Add `referrals.view`, `referrals.manage` and `integrations.manage` to the right roles in Admin > Roles (new installs give the first two to caseworkers and all three to managers).
-1. In the admin area, open **Integration keys** and create a key. You need the `integrations.manage` permission, which managers have by default. Give it a name ("NDIE website"), a source label that appears on every referral ("Website") and an hourly limit (20 is plenty for a small charity).
+1. In the admin area, open **Integration keys** and create a key. You need the `integrations.manage` permission, which managers have by default. Give it a name ("Charity website"), a source label that appears on every referral ("Website") and an hourly limit (20 is plenty for a small charity).
 2. Copy the key. It starts with `ccmk_` and is shown once. Only a SHA-256 hash of it is stored here.
-3. Put it in the website's server settings as `CONTACTS_API_KEY`, with `CONTACTS_API_URL` set to this system's address, for example `https://ndie-contacts.web.app`. The website sends to `${CONTACTS_API_URL}/api/referrals`.
+3. Put it in the website's server settings as `CONTACTS_API_KEY`, with `CONTACTS_API_URL` set to this system's address, for example `https://contacts.example.org`. The website sends to `${CONTACTS_API_URL}/api/referrals`.
 4. If a key leaks, revoke it and create a new one. Revoking takes effect at once.
 
 ## The intake endpoint

@@ -1,14 +1,14 @@
 import type { Theme } from "./types";
 
 /**
- * Nottingham & Derby Irish Elder Support. Irish greens with a warm gold
- * accent on cream. Many readers are older, so text is larger than the
- * default and contrast stays at WCAG AA or better.
+ * A built in example: deep greens with a warm gold accent on cream. Text is
+ * larger than the default, for services whose staff and volunteers include
+ * older people, and contrast stays at WCAG AA or better.
  */
-export const ndieTheme: Theme = {
-  id: "ndie",
-  appName: "NDIE Contacts",
-  logo: "/logo-ndie.svg",
+export const greenTheme: Theme = {
+  id: "green",
+  appName: "Contacts",
+  logo: "/logo-default.svg",
   radius: "0.75rem",
   typography: {
     bodyFont: '"Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif',

@@ -38,11 +38,11 @@ The dashboard reads one totals document per day, so it stays quick and cheap how
 
 ## The cookie
 
-The script sets one first party cookie, `ndie_vid` (the name is set in the website's tracker), holding a random id. It lasts 13 months, is `SameSite=Lax` and `Secure`, and is only used to tell new visitors from returning ones. A random visit id is kept in session storage and cleared when the browser tab closes.
+The script sets one first party cookie, such as `site_vid` (the website's tracker chooses the name), holding a random id. It lasts 13 months, is `SameSite=Lax` and `Secure`, and is only used to tell new visitors from returning ones. A random visit id is kept in session storage and cleared when the browser tab closes.
 
 The script sends nothing and sets no cookie when:
 
-- the visitor has opted out on the website's privacy page (stored as an `ndie_optout` cookie and in local storage);
+- the visitor has opted out on the website's privacy page (stored as an `site_optout` cookie and in local storage);
 - the browser sends Global Privacy Control (`navigator.globalPrivacyControl`);
 - the browser has Do Not Track turned on.
 
@@ -75,7 +75,7 @@ Firestore handles about one sustained write a second to a single document. Every
 ## Adding it to a website
 
 1. Add the site's origin under Admin, Organisation settings, Website analytics, such as `https://www.example.org`. List both `www` and non-`www` versions if the site answers on both, and `http://localhost:3000` while testing locally.
-2. On the website, post page views to `https://<contacts-site>/api/collect`. The NDIE website's tracker in `irish-charity/www/components/SiteAnalytics.tsx` is a complete example: it's one small client component with no libraries.
+2. On the website, post page views to `https://<contacts-site>/api/collect`. A small script of a few dozen lines is enough, with no libraries.
 
 Each message is JSON sent with `navigator.sendBeacon` (as `text/plain`, so there's no CORS preflight), falling back to `fetch` with `keepalive`:
 
